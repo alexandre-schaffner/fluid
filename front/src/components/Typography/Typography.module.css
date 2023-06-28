@@ -1,0 +1,23 @@
+@font-face {
+    font-family: Chivo-Regular;
+    src: url(./src/static/Chivo-Regular.ttf);
+}
+
+@font-face {
+    font-family: Chivo-Light;
+    src: url(./src/static/Chivo-Light.ttf);
+}
+
+h1 {
+    font-family: Chivo-Regular;
+    font-size: var(--size-font-title);
+    font-weight: normal;
+    color: var(--color-high-contrast-text);
+}
+
+h2 {
+    font-family: Chivo-Light;
+    font-weight: normal;
+    font-size: var(--size-font-subtitle);
+    color: var(--color-high-contrast-text);
+}

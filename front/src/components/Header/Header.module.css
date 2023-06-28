@@ -1,0 +1,14 @@
+.header {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: 1fr;
+    column-gap: var(--size-gap);
+    padding: var(--size-padding);
+    font-size: 40px;
+    background-color: var(--color-background-subtle);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.headerItem {
+    grid-column-start: span 2
+}

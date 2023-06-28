@@ -1,0 +1,47 @@
+@font-face {
+  font-family: Chivo;
+  src: url(./src/static/Chivo-Regular.ttf);
+}
+
+@font-face {
+  font-family: Chivo-Light;
+  src: url(./src/static/Chivo-Light.ttf);
+}
+
+a:visited {
+  color: var(--color-high-contrast-text);
+}
+
+a {
+  text-decoration: none;
+}
+
+#root {
+  height: 100%;
+}
+
+body {
+  --color-border: #E4E2E4;
+  --color-border-interactive: #dcdbdd;
+  --color-border-interactive-hover: #c8c7cb;
+  --color-high-contrast-text: #1A1523;
+  --color-low-contrast-text: #6F6E77;
+  --color-background: #FDFCFD;
+  --color-background-subtle: #F9F8F9;
+  --size-font-title: 56px;
+  --size-font-subtitle: 32px;
+  --size-font-body: 24px;
+  --size-padding: 20px;
+  --size-gap: 20px;
+  --size-border: 1px;
+  --size-border-radius: 8px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  height: 100vh;
+  max-height: 100vh;
+  background-color: var(--color-background);
+  font-size: var(--size-font-body);
+  font-family: Chivo-Light;
+  color: var(--color-low-contrast-text);
+}

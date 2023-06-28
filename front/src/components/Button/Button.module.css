@@ -1,0 +1,23 @@
+@font-face {
+    font-family: Chivo;
+    src: url(./src/static/Chivo-Regular.ttf);
+}
+
+button {
+    background-color: var(--color-background-subtle);
+    font-family: Chivo;
+    font-size: var(--size-font-subtitle);
+    color: var(--color-high-contrast-text);
+    border: 1px solid var(--color-high-contrast-text);
+    border-radius: 8px;
+    padding-top: var(--size-padding);
+    padding-bottom: var(--size-padding);
+    width: 100%;
+}
+
+button:hover {
+    transition: background-color 0.05s ease-in;
+    background-color: var(--color-high-contrast-text);
+    color: var(--color-background);
+    cursor: pointer;
+}
