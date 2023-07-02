@@ -1,5 +1,6 @@
 import { Accessor, Component, For } from "solid-js";
 import styles from "./Header.module.css";
+import { A } from "@solidjs/router";
 
 interface MenuItem {
   name: string;
@@ -12,12 +13,18 @@ export const Header: Component<{ items: MenuItem[] }> = (props) => {
   return (
     <header>
       <nav class={styles.header}>
-        <For each={props.items}>
+        <For each={items}>
           {(item: MenuItem, i: Accessor<number>) => {
             return (
-              <a class="headerItem" href={item.link}>
+              <A
+                class={styles.headerItem}
+                activeClass={styles.activePage}
+                inactiveClass={styles.inactiveItem}
+                href={item.link}
+                end={true}
+              >
                 {item.name}
-              </a>
+              </A>
             );
           }}
         </For>

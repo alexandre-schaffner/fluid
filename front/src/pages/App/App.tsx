@@ -8,6 +8,8 @@ import type { Component } from "solid-js";
 
 import { Landing } from "../LandingPage/LandingPage";
 import styles from "./App.module.css";
+import { PageContainer } from "../../components/PageContainer/PageContainer";
+import { Header } from "../../components/Header/Header";
 
 /*
 |--------------------------------------------------------------------------
@@ -17,9 +19,9 @@ import styles from "./App.module.css";
 
 const App: Component = () => {
   return (
-    <div class={styles.app}>
-      <Landing />
-    </div>
+    <PageContainer>
+      <Header items={[{ name: "Fluid", link: "http://localhost:3000/" }]} />
+    </PageContainer>
   );
 };
 

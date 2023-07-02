@@ -1,6 +1,6 @@
 export class MissingDataError extends Error {
   constructor(message?: string) {
-    super(message);
+    super('Missing ' + message);
     this.name = 'MissingDataError';
   }
 }

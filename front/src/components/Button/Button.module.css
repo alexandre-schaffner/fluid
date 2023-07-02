@@ -1,11 +1,6 @@
-@font-face {
-    font-family: Chivo;
-    src: url(./src/static/Chivo-Regular.ttf);
-}
-
 button {
     background-color: var(--color-background-subtle);
-    font-family: Chivo;
+    font-family: Chivo-Light;
     font-size: var(--size-font-subtitle);
     color: var(--color-high-contrast-text);
     border: 1px solid var(--color-high-contrast-text);

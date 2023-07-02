@@ -1,11 +1,6 @@
 @font-face {
-  font-family: Chivo;
-  src: url(./src/static/Chivo-Regular.ttf);
-}
-
-@font-face {
   font-family: Chivo-Light;
-  src: url(./src/static/Chivo-Light.ttf);
+  src: url(/Users/alexandreschaffner/Projects/fluid/front/src/static/Chivo-Light.ttf);
 }
 
 a:visited {

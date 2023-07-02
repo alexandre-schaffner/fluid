@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { AuthJwt } from 'src/contracts/AuthJwt';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -17,10 +18,10 @@ export class VerifyJwtGuard implements CanActivate {
     try {
       const request = context.switchToHttp().getRequest();
 
-      const jwt = request.cookies['jwt'];
+      const jwt: string = request.cookies['jwt'];
       if (!jwt) throw new UnauthorizedException();
 
-      const payload = await this.jwtService.verifyAsync(jwt);
+      const payload: AuthJwt = await this.jwtService.verifyAsync(jwt);
 
       if (
         await this.prismaService.revokedToken.findUnique({

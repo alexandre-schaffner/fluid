@@ -1,4 +1,4 @@
-export interface googleJwt {
+export interface GoogleJwt {
   iss: string;
   sub: string;
   azp: string;
