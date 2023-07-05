@@ -6,9 +6,9 @@
 
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
+import { OAuth2Client } from 'google-auth-library';
 import { GoogleJwt } from 'src/contracts/GoogleJwt';
 import { MissingDataError } from 'src/Errors/MissingData.error';
-import { googleClient } from 'src/GoogleClient/googleClient';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 /*
@@ -22,6 +22,12 @@ export class AuthService {
   private readonly encodedCredentials = Buffer.from(
     `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`,
   ).toString('base64');
+
+  private readonly googleAuthClient = new OAuth2Client(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    process.env.GOOGLE_REDIRECT_URI,
+  );
 
   constructor(private readonly prismaService: PrismaService) {}
 
@@ -47,7 +53,7 @@ export class AuthService {
   //--------------------------------------------------------------------------
   async exchangeYoutubeCodeForTokens(code: string, userId: string) {
     try {
-      const { tokens } = await googleClient.getToken(code);
+      const { tokens } = await this.googleAuthClient.getToken(code);
 
       if (!tokens.refresh_token) throw new MissingDataError('refresh_token');
       await this.prismaService.token.create({

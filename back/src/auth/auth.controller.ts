@@ -19,8 +19,6 @@ import { v4 as uuid } from 'uuid';
 
 import { verifyIdTokenGuard } from '../guards/verify-id-token.guard';
 import { AuthService } from './auth.service';
-import { Buffer } from 'buffer';
-import querystring from 'node:querystring';
 
 declare module 'fastify' {
   interface FastifyRequest {

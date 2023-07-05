@@ -10,6 +10,7 @@ import { VerifyJwtGuard } from 'src/guards/verify-jwt.guard';
     PrismaModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
+      global: true,
     }),
   ],
   controllers: [AuthController],
