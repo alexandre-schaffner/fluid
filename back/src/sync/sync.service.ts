@@ -10,6 +10,8 @@ import { Token } from '@prisma/client';
 import { google } from 'googleapis';
 import { SyncEntry } from 'src/contracts/SyncEntry';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { getArtist } from 'src/utils/getArtist';
+import { getTitle } from 'src/utils/getTitle';
 
 /*
 |--------------------------------------------------------------------------
@@ -31,11 +33,17 @@ export class SyncService {
   @Interval('sync', 1000 * 60 * 3)
   async sync() {
     console.log('syncing');
+
+    // Iterate over the syncMap
+    //--------------------------------------------------------------------------
     for (const [key, value] of this.syncMap.entries()) {
+      // Retrieve the list of the title of the last 5 liked videos by the user
+      //--------------------------------------------------------------------------
       const list = await value.youtube.videos.list(
         {
           part: ['snippet'],
-          fields: 'items(snippet/title),etag',
+          fields:
+            'items(snippet/title,snippet/categoryId,snippet/channelTitle),etag',
           myRating: 'like',
         },
         {
@@ -43,14 +51,25 @@ export class SyncService {
         },
       );
       if (list.status === 304) continue;
-      value.etag = list.data.etag!;
-      this.syncMap.set(key, value);
 
       // TODO: Detect music videos and add them to the streaming platform
       //--------------------------------------------------------------------------
       for (const item of list.data.items!) {
-        console.log(item.snippet!.title);
+        const artist = getArtist(item.snippet!);
+        const title = getTitle(item.snippet!);
+        if (!artist || !title) continue;
+        console.log('artist:', artist, 'title:', title);
       }
+
+      value.lastLikedVideosCache = list.data.items!.map((item) => {
+        return {
+          title: item.snippet!.title!,
+          categoryId: item.snippet!.categoryId!,
+        };
+      });
+      value.etag = list.data.etag!;
+
+      this.syncMap.set(key, value);
     }
   }
 
@@ -77,6 +96,7 @@ export class SyncService {
         youtube,
         streamingPlatformRefreshToken: token.streamingPlatformRefreshToken!,
         etag: undefined,
+        lastLikedVideosCache: [],
       });
     }
   }
@@ -107,6 +127,7 @@ export class SyncService {
       youtube,
       streamingPlatformRefreshToken: tokens!.streamingPlatformRefreshToken!,
       etag: undefined,
+      lastLikedVideosCache: [],
     });
 
     // TODO: Use an interceptor to make db request after the response is sent

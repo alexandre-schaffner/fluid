@@ -1,24 +1,9 @@
 import { ParentComponent, children } from "solid-js";
 import styles from "./PageContainer.module.css";
 
-enum Direction {
-  Vertical,
-  Horizontal,
-}
-
-export const PageContainer: ParentComponent<{ direction?: Direction }> = (
-  props = { direction: Direction.Vertical }
-) => {
-  const { direction } = props;
-
+export const PageContainer: ParentComponent = (props) => {
   return (
-    <div
-      class={
-        direction === Direction.Horizontal
-          ? styles.horizontalPageContainer
-          : styles.verticalPageContainer
-      }
-    >
+    <div class={styles.verticalPageContainer}>
       {children(() => props.children)()}
     </div>
   );

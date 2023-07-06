@@ -15,9 +15,9 @@ export const AuthorizeStreamingPlatform = () => {
       <Header items={menuItems} />
       <div class={styles.body}>
         <div class={styles.content}>
-          <Typography variation={Variant.Title}>Last step !</Typography>
+          <Typography variation={"title"}>Last step !</Typography>
 
-          <Typography variation={Variant.Subtitle}>
+          <Typography variation={"subtitle"}>
             Fluid need access to your streaming platform in order to
             automatically manage your playlists.
           </Typography>

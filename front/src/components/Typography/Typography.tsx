@@ -16,18 +16,18 @@ export enum Variant {
 }
 
 export const Typography: ParentComponent<{
-  variation: Variant;
+  variation?: string;
 }> = (props) => {
   const text = children(() => props.children);
 
   switch (props.variation) {
-    case Variant.Auto:
-      return <>{text()}</>;
-    case Variant.Title:
-      return <h1>{text()}</h1>;
-    case Variant.Subtitle:
-      return <h2>{text()}</h2>;
-    case Variant.Body:
+    case undefined:
       return <p>{text()}</p>;
+    case "title":
+      return <h1>{text()}</h1>;
+    case "subtitle":
+      return <h2>{text()}</h2>;
+    case "small":
+      return <small>{text()}</small>;
   }
 };

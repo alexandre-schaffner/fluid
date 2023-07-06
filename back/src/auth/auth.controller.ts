@@ -27,6 +27,12 @@ declare module 'fastify' {
   }
 }
 
+const authorizeStreamingPlatformPage =
+  'http://localhost:3000/authorize/streaming-platform';
+const homePage = 'http://localhost:3000/home';
+const selectPlaylistPage = 'http://localhost:3000/playlist';
+const authorizeYouTubePage = 'http://localhost:3000/authorize/youtube';
+
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -35,16 +41,26 @@ export class AuthController {
     private readonly prismaService: PrismaService,
   ) {}
 
+  // Webhook for Google Sign In
+  //--------------------------------------------------------------------------
   @UseGuards(verifyIdTokenGuard)
   @Post('webhook/google-sign-in')
   async googleSignIn(@Req() req: FastifyRequest, @Res() res: FastifyReply) {
+    // Setting up a hash for the state parmeter
+    //--------------------------------------------------------------------------
     const hash = createHmac('sha256', process.env.JWT_SECRET!);
 
+    // Retrieve the Google JWT from the request
+    //--------------------------------------------------------------------------
     const { googleJwt } = req;
     if (!googleJwt) return res.status(400).send('Bad Request');
 
+    // Create or retrieve the user from the database
+    //--------------------------------------------------------------------------
     const user = await this.authService.googleSignIn(googleJwt);
 
+    // Create a JWT for the user
+    //--------------------------------------------------------------------------
     const jwt = {
       jti: uuid(),
       sub: user.id,
@@ -52,40 +68,46 @@ export class AuthController {
       tokenType: 'access_token',
     };
     const signedJwt = await this.jwtService.signAsync(jwt);
+
+    // The state parameter is the signed hash of the JWT
+    //--------------------------------------------------------------------------
     const signedJwtHash = hash.update(signedJwt).digest('hex');
 
+    // Set the JWT as an httpOnly cookie
+    //--------------------------------------------------------------------------
     res.setCookie('jwt', await this.jwtService.signAsync(jwt));
 
+    // Check if the user has already authorized their YouTube account
+    //--------------------------------------------------------------------------
     const youtubeRefreshToken = (
       await this.prismaService.token.findUnique({
         where: { userId: user.id },
       })
     )?.youtubeRefreshToken;
 
+    // Check if the user has already authorized their streaming platform account
+    //--------------------------------------------------------------------------
     const streamingPlatformRefreshToken = (
       await this.prismaService.token.findUnique({
         where: { userId: user.id },
       })
     )?.streamingPlatformRefreshToken;
 
-    if (youtubeRefreshToken && !streamingPlatformRefreshToken) {
-      return res
-        .status(302)
-        .redirect('http://localhost:3000/authorize/streaming-platform');
-    } else if (youtubeRefreshToken && streamingPlatformRefreshToken) {
-      return res.status(302).redirect('http://localhost:3000/home');
-    }
-
+    // Redirect the user to the appropriate page
+    //--------------------------------------------------------------------------
+    if (youtubeRefreshToken && !streamingPlatformRefreshToken)
+      return res.status(302).redirect(authorizeStreamingPlatformPage);
+    else if (youtubeRefreshToken && streamingPlatformRefreshToken)
+      return res.status(302).redirect(selectPlaylistPage);
     return res
       .status(302)
       .redirect(
-        'http://localhost:3000/authorize/youtube?user=' +
-          user.name +
-          '&state=' +
-          signedJwtHash,
+        authorizeYouTubePage + '?user=' + user.name + '&state=' + signedJwtHash,
       );
   }
 
+  // Webhook for YouTube Authorization
+  //--------------------------------------------------------------------------
   @UseGuards(VerifyJwtGuard)
   @Get('webhook/authorize/youtube')
   async authorizeYoutube(
@@ -114,14 +136,14 @@ export class AuthController {
     )?.streamingPlatformRefreshToken;
 
     if (youtubeRefreshToken && !streamingPlatformRefreshToken) {
-      res
-        .status(302)
-        .redirect('http://localhost:3000/authorize/streaming-platform');
+      res.status(302).redirect(authorizeStreamingPlatformPage);
     } else if (youtubeRefreshToken && streamingPlatformRefreshToken) {
-      res.status(302).redirect('http://localhost:3000/home');
+      res.status(302).redirect(selectPlaylistPage);
     }
   }
 
+  // Webhook for Spotify Authorization
+  //--------------------------------------------------------------------------
   @UseGuards(VerifyJwtGuard)
   @Get('webhook/spotify/code')
   async getSpotifyCode(
@@ -132,6 +154,6 @@ export class AuthController {
   ) {
     await this.authService.exchangeSpotifyCodeForTokens(code, req.user!.sub!);
 
-    return res.status(302).redirect('http://localhost:3000/home');
+    return res.status(302).redirect(selectPlaylistPage);
   }
 }

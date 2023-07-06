@@ -1,9 +1,9 @@
 button {
-    background-color: var(--color-background-subtle);
+    background-color: var(--color-component-background);
     font-family: Chivo-Light;
     font-size: var(--size-font-subtitle);
-    color: var(--color-high-contrast-text);
-    border: 1px solid var(--color-high-contrast-text);
+    color: var(--color-text-high-contrast-1);
+    border: 1px solid var(--color-border-interactive);
     border-radius: 8px;
     padding-top: var(--size-padding);
     padding-bottom: var(--size-padding);
@@ -11,8 +11,8 @@ button {
 }
 
 button:hover {
-    transition: background-color 0.05s ease-in;
-    background-color: var(--color-high-contrast-text);
-    color: var(--color-background);
+    background-color: var(--color-cta-background-hovered);
+    border: 1px solid var(--color-border-interactive-hovered);
+    color: var(--color-text-low-contrast-1);
     cursor: pointer;
 }

@@ -1,7 +1,7 @@
 .body {
-    padding-top: 40px;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-top: var(--size-padding-l);
+    padding-left: var(--size-padding);
+    padding-right: var(--size-padding);
     display: grid;
     align-items: center;
     grid-template-columns: repeat(12, 1fr);
@@ -18,7 +18,7 @@
 .platforms {
     display: flex;
     flex-direction: row;
-    column-gap: 20px;
+    column-gap: var(--size-gap);
 }
 
 @media screen and (max-width: 1200px) {
@@ -36,20 +36,6 @@
 
     .platforms {
         flex-direction: column;
-        row-gap: 20px;
+        row-gap: var(--size-gap);
     }
 }
-
-/* @media screen and (max-width: 992px) {
-    .content {
-        grid-column-end: span 10;
-    }
-    .getStarted {
-        display: block;
-        row-gap: 20px;
-        grid-row: 1;
-        grid-column-start: 2;
-        grid-column-end: span 3;
-    }
-}
- */

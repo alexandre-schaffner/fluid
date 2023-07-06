@@ -36,18 +36,16 @@ export const Landing: Component = () => {
       <Header items={menuItems} />
       <div class={styles.body}>
         <div class={styles.content}>
-          <Typography variation={Variant.Title}>
+          <Typography variation="title">
             Discover on YouTube, enjoy on Spotify
           </Typography>
 
-          <Typography variation={Variant.Subtitle}>
+          <Typography variation="subtitle">
             Fluid automatically saves your YouTube music discoveries to a
             Spotify playlist of your choice.
           </Typography>
-          <Typography variation={Variant.Auto}>
-            Sign-in with Google to get started.
-          </Typography>
           <Divider />
+          <Typography>Sign-in with Google to get started.</Typography>
           <Show when={width() <= 992}>
             <div class={styles.getStarted}>
               <SignInWithGoogle />

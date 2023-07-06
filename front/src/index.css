@@ -4,7 +4,7 @@
 }
 
 a:visited {
-  color: var(--color-high-contrast-text);
+  color: var(--color-text-low-contrast-1);
 }
 
 a {
@@ -15,21 +15,64 @@ a {
   height: 100%;
 }
 
+/* const blue = {
+  blue1: '#fbfdff',
+  blue2: '#f5faff',
+  blue3: '#edf6ff',
+  blue4: '#e1f0ff',
+  blue5: '#cee7fe',
+  blue6: '#b7d9f8',
+  blue7: '#96c7f2',
+  blue8: '#5eb0ef',
+  blue9: '#0091ff',
+  blue10: '#0081f1',
+  blue11: '#006adc',
+  blue12: '#00254d',
+} */
+
+/* const slate = {
+  slate1: '#fbfcfd',
+  slate2: '#f8f9fa',
+  slate3: '#f1f3f5',
+  slate4: '#eceef0',
+  slate5: '#e6e8eb',
+  slate6: '#dfe3e6',
+  slate7: '#d7dbdf',
+  slate8: '#c1c8cd',
+  slate9: '#889096',
+  slate10: '#7e868c',
+  slate11: '#687076',
+  slate12: '#11181c',
+} */
+
 body {
-  --color-border: #E4E2E4;
-  --color-border-interactive: #dcdbdd;
-  --color-border-interactive-hover: #c8c7cb;
-  --color-high-contrast-text: #1A1523;
-  --color-low-contrast-text: #6F6E77;
-  --color-background: #FDFCFD;
-  --color-background-subtle: #F9F8F9;
+  --color-background: #fbfdff;
+  --color-background-2: #f5faff;
+  --color-component-background: #edf6ff;
+  --color-component-background-hovered: #e1f0ff;
+  --color-component-background-selected: #cee7fe;
+  --color-cta-background: #e1f0ff;
+  --color-cta-background-hovered: #cee7fe;
+  --color-cta-background-selected: #b7d9f8;
+  --color-border: #b7d9f8;
+  --color-border-interactive: #96c7f2;
+  --color-border-interactive-hovered: #5eb0ef;
+  --color-solid: #0091ff;
+  --color-solid-hovered: #0081f1;
+  --color-text-low-contrast: #687076;
+  --color-text-high-contrast: #11181c;
+  --color-text-low-contrast-2: #006adc;
+  --color-text-high-contrast-2: #00254d;
+
+  --size-font: 24px;
   --size-font-title: 56px;
   --size-font-subtitle: 32px;
-  --size-font-body: 24px;
   --size-padding: 20px;
+  --size-padding-l: 40px;
   --size-gap: 20px;
-  --size-border: 1px;
-  --size-border-radius: 8px;
+  --size-margin-l: 20px;
+  --size-border-radius: 4px;
+  --size-border-radius-l: 8px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
@@ -38,5 +81,5 @@ body {
   background-color: var(--color-background);
   font-size: var(--size-font-body);
   font-family: Chivo-Light;
-  color: var(--color-low-contrast-text);
+  color: var(--color-text-low-contrast);
 }

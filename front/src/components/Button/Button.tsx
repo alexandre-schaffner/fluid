@@ -9,7 +9,7 @@ export const Button: Component<{ label: string; clickHandler: () => void }> = (
 
   return (
     <button onClick={clickHandler}>
-      <Typography variation={Variant.Auto}>{label}</Typography>
+      <Typography>{label}</Typography>
     </button>
   );
 };

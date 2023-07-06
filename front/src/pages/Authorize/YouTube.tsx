@@ -8,7 +8,7 @@ import { Component, createEffect, createSignal, Show } from "solid-js";
 
 import { Divider } from "../../components/Divider/Divider";
 import { Header } from "../../components/Header/Header";
-import { Typography, Variant } from "../../components/Typography/Typography";
+import { Typography } from "../../components/Typography/Typography";
 import styles from "./Youtube.module.css";
 import { Button } from "../../components/Button/Button";
 import { useSearchParams } from "@solidjs/router";
@@ -43,12 +43,12 @@ export const AuthorizeYouTube: Component = () => {
       <Header items={menuItems} />
       <div class={styles.body}>
         <div class={styles.content}>
-          <Typography variation={Variant.Title}>
+          <Typography variation={"title"}>
             Welcome {user},
             <br />
           </Typography>
 
-          <Typography variation={Variant.Subtitle}>
+          <Typography variation={"subtitle"}>
             Fluid requires access to your YouTube account in order to track
             music you like.
           </Typography>

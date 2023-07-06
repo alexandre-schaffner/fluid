@@ -8,6 +8,7 @@ import App from "./pages/App/App";
 import { AuthorizeStreamingPlatform } from "./pages/Authorize/StreamingPlatform";
 import { AuthorizeYouTube } from "./pages/Authorize/YouTube";
 import Landing from "./pages/LandingPage/LandingPage";
+import { SelectPlaylist } from "./pages/SelectPlaylist/SelectPlaylist";
 
 const root = document.getElementById("root");
 
@@ -29,7 +30,7 @@ render(
             component={AuthorizeStreamingPlatform}
           />
         </Route>
-        <Route path="/home" component={App} />
+        <Route path="/playlist" component={SelectPlaylist} />
       </Routes>
     </Router>
   ),
