@@ -1,3 +1,7 @@
 {
-    "googleClientId": "205349973317-s5h03qvn3hlnjhoe52nu66aso811nlml.apps.googleusercontent.com"
+    "googleClientId": "205349973317-s5h03qvn3hlnjhoe52nu66aso811nlml.apps.googleusercontent.com",
+    "authorizeStreamingPlatformPage": "http://localhost:3000/authorize/streaming-platform",
+    "homePage": "http://localhost:3000/home",
+    "selectPlaylistPage": "http://localhost:3000/playlist",
+    "authorizeYouTubePage": "http://localhost:3000/authorize/youtube"
 }

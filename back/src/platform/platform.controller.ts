@@ -19,8 +19,10 @@ export class StreamingPlatformController {
 
   @UseGuards(VerifyJwtGuard)
   @Get('playlists')
-  getPlaylists(@Req() req: FastifyRequest) {
-    const playlists = this.streamingPlatformService.getPlaylists(req.user!.sub);
+  async getPlaylists(@Req() req: FastifyRequest) {
+    const playlists = await this.streamingPlatformService.getPlaylists(
+      req.user!.sub,
+    );
     return { playlists };
   }
 

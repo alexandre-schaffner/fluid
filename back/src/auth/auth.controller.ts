@@ -21,12 +21,11 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 import { verifyIdTokenGuard } from '../guards/verify-id-token.guard';
 import { AuthService } from './auth.service';
-
-const authorizeStreamingPlatformPage =
-  'http://localhost:3000/authorize/streaming-platform';
-const homePage = 'http://localhost:3000/home';
-const selectPlaylistPage = 'http://localhost:3000/playlist';
-const authorizeYouTubePage = 'http://localhost:3000/authorize/youtube';
+import {
+  authorizeStreamingPlatformPage,
+  selectPlaylistPage,
+  authorizeYouTubePage,
+} from 'constants.json';
 
 @Controller('auth')
 export class AuthController {
@@ -42,6 +41,7 @@ export class AuthController {
   async googleSignIn(@Req() req: FastifyRequest, @Res() res: FastifyReply) {
     // Setting up a hash for the state parmeter
     //--------------------------------------------------------------------------
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const hash = createHmac('sha256', process.env.JWT_SECRET!);
 
     // Retrieve the Google JWT from the request
@@ -108,15 +108,22 @@ export class AuthController {
     @Query('code') code: string,
     @Query('state') state: string,
   ) {
+    //--------------------------------------------------------------------------
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const hash = createHmac('sha256', process.env.JWT_SECRET!);
+    //--------------------------------------------------------------------------
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const jwtHash = hash.update(req.cookies['jwt']!).digest('hex');
 
     if (jwtHash !== state) throw new BadRequestException();
-
+    //--------------------------------------------------------------------------
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     await this.authService.exchangeYoutubeCodeForTokens(code, req.user!.sub!);
 
     const youtubeRefreshToken = (
       await this.prismaService.youTubeToken.findUnique({
+        //--------------------------------------------------------------------------
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         where: { userId: req.user!.sub! },
         select: { refreshToken: true },
       })
@@ -124,6 +131,8 @@ export class AuthController {
 
     const streamingPlatformRefreshToken = (
       await this.prismaService.platform.findUnique({
+        //--------------------------------------------------------------------------
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         where: { userId: req.user!.sub! },
         select: { refreshToken: true },
       })
@@ -146,6 +155,8 @@ export class AuthController {
     @Query('code') code: string,
     @Query('state') state: string,
   ) {
+    //--------------------------------------------------------------------------
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     await this.authService.exchangeSpotifyCodeForTokens(code, req.user!.sub!);
 
     return res.status(302).redirect(selectPlaylistPage);

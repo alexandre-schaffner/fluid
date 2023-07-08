@@ -19,7 +19,6 @@ export class VerifyJwtGuard implements CanActivate {
       const request = context.switchToHttp().getRequest();
 
       const jwt: string = request.cookies['jwt'];
-      console.log(jwt);
       if (!jwt) throw new UnauthorizedException();
 
       const payload: AuthJwt = await this.jwtService.verifyAsync(jwt);
