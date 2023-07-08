@@ -1,6 +1,6 @@
 export interface AuthJwt {
-  jti: string;
-  sub: string;
-  expiresIn: string;
-  tokenType: string;
+  jti: string; // jwt id
+  sub: string; // user id
+  expiresIn: string; // 15min
+  tokenType: string; // access_token | refresh_token
 }

@@ -7,6 +7,10 @@ import { Typography, Variant } from "../../components/Typography/Typography";
 import styles from "./StreamingPlatform.module.css";
 import { PageContainer } from "../../components/PageContainer/PageContainer";
 
+const spotifyClientId = '6b99eeab69c44b28aa9187b60312acef'
+const spotifyScopes = 'user-read-private%20user-read-email%20playlist-modify-public%20playlist-modify-private'
+const spotifyRedirectUri = 'http://localhost:8000/auth/webhook/spotify/code'
+
 export const AuthorizeStreamingPlatform = () => {
   const menuItems = [{ name: "Fluid", link: "/" }];
 
@@ -27,7 +31,7 @@ export const AuthorizeStreamingPlatform = () => {
               label="Spotify"
               clickHandler={() =>
                 (document.location.href =
-                  "https://accounts.spotify.com/authorize?response_type=code&client_id=6b99eeab69c44b28aa9187b60312acef&scope=playlist-modify-public%20playlist-modify-private&redirect_uri=http://localhost:8000/auth/webhook/spotify/code")
+                  `https://accounts.spotify.com/authorize?response_type=code&client_id=${spotifyClientId}&scope=${spotifyScopes}&redirect_uri=${spotifyRedirectUri}`)
               }
             />
             <Button

@@ -1,13 +1,33 @@
-import { Component, For } from "solid-js";
-import { PageContainer } from "../../components/PageContainer/PageContainer";
-import { Header } from "../../components/Header/Header";
-import styles from "./SelectPlaylist.module.css";
-import { Typography, Variant } from "../../components/Typography/Typography";
-import { Playlist } from "./components/Playlist";
-import { Divider } from "../../components/Divider/Divider";
+/*
+| Developed by Starton
+| Filename : SelectPlaylist.tsx
+| Author : Alexandre Schaffner (alexandre.s@starton.com)
+*/
+
+import axios from 'axios';
+import { Component, createSignal, For, onMount } from 'solid-js';
+
+import { Divider } from '../../components/Divider/Divider';
+import { Header } from '../../components/Header/Header';
+import { PageContainer } from '../../components/PageContainer/PageContainer';
+import { Typography } from '../../components/Typography/Typography';
+import { PlaylistMetadata } from '../../contracts/PlaylistMetadata';
+import { Playlist } from './components/Playlist';
+import styles from './SelectPlaylist.module.css';
+
+axios.defaults.withCredentials = true;
 
 export const SelectPlaylist: Component = () => {
   const menuItems = [{ name: "Fluid", link: "/" }];
+
+  const [playlists, setPlaylists] = createSignal<PlaylistMetadata[]>([]);
+
+  onMount(async () => {
+    const res = await axios.get("http://localhost:8000/platform/playlists", {
+      withCredentials: true
+    });
+    setPlaylists(res.data.playlists);
+  })
 
   return (
     <PageContainer>
@@ -25,21 +45,15 @@ export const SelectPlaylist: Component = () => {
           <div class={styles.playlistsContainer}>
             <Typography>Your playlists</Typography>
             <Divider />
-            <Playlist
-              name="Liked Songs"
-              image="https://i1.sndcdn.com/artworks-y6qitUuZoS6y8LQo-5s2pPA-t500x500.jpg"
-              length={42}
-            />
-            <Playlist
-              name="Playlist #1"
-              image="https://i1.sndcdn.com/artworks-y6qitUuZoS6y8LQo-5s2pPA-t500x500.jpg"
-              length={42}
-            />
-            <Playlist
-              name="Playlist #2"
-              image="https://i1.sndcdn.com/artworks-y6qitUuZoS6y8LQo-5s2pPA-t500x500.jpg"
-              length={42}
-            />
+            <For each={playlists()}>
+              {(playlist) => (
+                <Playlist
+                  name={playlist.name}
+                  image={playlist.image}
+                  length={playlist.length}
+                />
+              )}
+            </For>
           </div>
         </div>
       </div>

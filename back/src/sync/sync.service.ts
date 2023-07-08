@@ -6,7 +6,6 @@
 
 import { Injectable } from '@nestjs/common';
 import { Interval, SchedulerRegistry } from '@nestjs/schedule';
-import { Token } from '@prisma/client';
 import { google } from 'googleapis';
 import { SyncEntry } from 'src/contracts/SyncEntry';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -75,8 +74,19 @@ export class SyncService {
 
   // Init the syncMap with the synced users
   //--------------------------------------------------------------------------
-  initSync(tokens: Token[]) {
-    for (const token of tokens) {
+  async initSync() {
+    const tokens = await this.prismaService.user.findMany({
+      where: { sync: true },
+      include: { Platform: true, YouTubeToken: true },
+    });
+
+    console.log(tokens);
+
+    for (const item of tokens) {
+      if (!item.YouTubeToken || !item.Platform) {
+        console.error(`Cannot sync ${item.id}: the user has token(s) missing.`);
+        continue;
+      }
       const googleClient = new google.auth.OAuth2(
         process.env.GOOGLE_CLIENT_ID,
         process.env.GOOGLE_CLIENT_SECRET,
@@ -84,7 +94,7 @@ export class SyncService {
       );
 
       googleClient.setCredentials({
-        refresh_token: token.youtubeRefreshToken!,
+        refresh_token: item.YouTubeToken.refreshToken,
       });
 
       const youtube = google.youtube({
@@ -92,9 +102,9 @@ export class SyncService {
         auth: googleClient,
       });
 
-      this.syncMap.set(token.userId, {
+      this.syncMap.set(item.id, {
         youtube,
-        streamingPlatformRefreshToken: token.streamingPlatformRefreshToken!,
+        streamingPlatformRefreshToken: item.Platform.refreshToken,
         etag: undefined,
         lastLikedVideosCache: [],
       });
@@ -110,12 +120,21 @@ export class SyncService {
       process.env.GOOGLE_REDIRECT_URI,
     );
 
-    const tokens = await this.prismaService.token.findUnique({
-      where: { userId },
-    });
+    const youtubeRefreshToken = (
+      await this.prismaService.youTubeToken.findUniqueOrThrow({
+        where: { userId },
+        select: { refreshToken: true },
+      })
+    ).refreshToken;
+    const platformRefreshToken = (
+      await this.prismaService.platform.findUniqueOrThrow({
+        where: { userId },
+        select: { refreshToken: true },
+      })
+    ).refreshToken;
 
     googleClient.setCredentials({
-      refresh_token: tokens!.youtubeRefreshToken!,
+      refresh_token: youtubeRefreshToken,
     });
 
     const youtube = google.youtube({
@@ -125,15 +144,15 @@ export class SyncService {
 
     this.syncMap.set(userId, {
       youtube,
-      streamingPlatformRefreshToken: tokens!.streamingPlatformRefreshToken!,
+      streamingPlatformRefreshToken: platformRefreshToken,
       etag: undefined,
       lastLikedVideosCache: [],
     });
 
     // TODO: Use an interceptor to make db request after the response is sent
     //--------------------------------------------------------------------------
-    await this.prismaService.token.update({
-      where: { userId },
+    await this.prismaService.user.update({
+      where: { id: userId },
       data: { sync: true },
     });
   }
@@ -143,8 +162,8 @@ export class SyncService {
 
     // TODO: Use an interceptor to make db request after the response is sent
     //--------------------------------------------------------------------------
-    await this.prismaService.token.update({
-      where: { userId },
+    await this.prismaService.user.update({
+      where: { id: userId },
       data: { sync: false },
     });
   }

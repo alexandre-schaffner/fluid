@@ -1,3 +1,9 @@
+/*
+| Developed by Starton
+| Filename : auth.controller.ts
+| Author : Alexandre Schaffner (alexandre.s@starton.com)
+*/
+
 import {
   BadRequestException,
   Controller,
@@ -8,24 +14,13 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { createHmac } from 'crypto';
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { AuthJwt } from 'src/contracts/AuthJwt';
-import { GoogleJwt } from 'src/contracts/GoogleJwt';
 import { VerifyJwtGuard } from 'src/guards/verify-jwt.guard';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { v4 as uuid } from 'uuid';
 
 import { verifyIdTokenGuard } from '../guards/verify-id-token.guard';
 import { AuthService } from './auth.service';
-
-declare module 'fastify' {
-  interface FastifyRequest {
-    googleJwt?: GoogleJwt;
-    user?: AuthJwt;
-  }
-}
 
 const authorizeStreamingPlatformPage =
   'http://localhost:3000/authorize/streaming-platform';
@@ -37,7 +32,6 @@ const authorizeYouTubePage = 'http://localhost:3000/authorize/youtube';
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly jwtService: JwtService,
     private readonly prismaService: PrismaService,
   ) {}
 
@@ -61,37 +55,35 @@ export class AuthController {
 
     // Create a JWT for the user
     //--------------------------------------------------------------------------
-    const jwt = {
-      jti: uuid(),
-      sub: user.id,
-      expiresIn: '15min',
-      tokenType: 'access_token',
-    };
-    const signedJwt = await this.jwtService.signAsync(jwt);
+    const jwt = await this.authService.issueJwt(user.id);
 
     // The state parameter is the signed hash of the JWT
     //--------------------------------------------------------------------------
-    const signedJwtHash = hash.update(signedJwt).digest('hex');
+    const signedJwtHash = hash.update(JSON.stringify(jwt)).digest('hex');
 
     // Set the JWT as an httpOnly cookie
     //--------------------------------------------------------------------------
-    res.setCookie('jwt', await this.jwtService.signAsync(jwt));
+    res.setCookie('jwt', jwt, {
+      path: '/',
+    });
 
     // Check if the user has already authorized their YouTube account
     //--------------------------------------------------------------------------
     const youtubeRefreshToken = (
-      await this.prismaService.token.findUnique({
+      await this.prismaService.youTubeToken.findUnique({
         where: { userId: user.id },
+        select: { refreshToken: true },
       })
-    )?.youtubeRefreshToken;
+    )?.refreshToken;
 
     // Check if the user has already authorized their streaming platform account
     //--------------------------------------------------------------------------
     const streamingPlatformRefreshToken = (
-      await this.prismaService.token.findUnique({
+      await this.prismaService.platform.findUnique({
         where: { userId: user.id },
+        select: { refreshToken: true },
       })
-    )?.streamingPlatformRefreshToken;
+    )?.refreshToken;
 
     // Redirect the user to the appropriate page
     //--------------------------------------------------------------------------
@@ -124,16 +116,18 @@ export class AuthController {
     await this.authService.exchangeYoutubeCodeForTokens(code, req.user!.sub!);
 
     const youtubeRefreshToken = (
-      await this.prismaService.token.findUnique({
+      await this.prismaService.youTubeToken.findUnique({
         where: { userId: req.user!.sub! },
+        select: { refreshToken: true },
       })
-    )?.youtubeRefreshToken;
+    )?.refreshToken;
 
     const streamingPlatformRefreshToken = (
-      await this.prismaService.token.findUnique({
+      await this.prismaService.platform.findUnique({
         where: { userId: req.user!.sub! },
+        select: { refreshToken: true },
       })
-    )?.streamingPlatformRefreshToken;
+    )?.refreshToken;
 
     if (youtubeRefreshToken && !streamingPlatformRefreshToken) {
       res.status(302).redirect(authorizeStreamingPlatformPage);

@@ -11,12 +11,13 @@ datasource db {
 }
 
 model User {
-  id                String   @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt         DateTime @default(now())
-  email             String   @unique
-  name              String
-  Token             Token[]
-  playlistUniqueRef String?  @unique
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt    DateTime      @default(now())
+  email        String        @unique
+  name         String
+  sync         Boolean       @default(false)
+  Platform     Platform?
+  YouTubeToken YouTubeToken?
 }
 
 model RevokedToken {
@@ -25,11 +26,24 @@ model RevokedToken {
   jti       String   @unique
 }
 
-model Token {
-  id                            String  @id @default(auto()) @map("_id") @db.ObjectId
-  youtubeRefreshToken           String
-  streamingPlatformRefreshToken String?
-  sync                          Boolean @default(false)
-  user                          User    @relation(fields: [userId], references: [id])
-  userId                        String  @unique @db.ObjectId
+model Platform {
+  id                String            @id @default(auto()) @map("_id") @db.ObjectId
+  type              StreamingPlatform
+  refreshToken      String
+  userUniqueRef     String            @unique
+  playlistUniqueRef String?
+  user              User              @relation(fields: [userId], references: [id])
+  userId            String            @unique @db.ObjectId
+}
+
+model YouTubeToken {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  refreshToken String
+  user         User   @relation(fields: [userId], references: [id])
+  userId       String @unique @db.ObjectId
+}
+
+enum StreamingPlatform {
+  SPOTIFY
+  DEEZER
 }

@@ -15,15 +15,9 @@ export class SyncModule implements OnModuleInit {
     private readonly syncService: SyncService,
   ) {}
   async onModuleInit() {
-    // Get all the synced users
-    //--------------------------------------------------------------------------
-    const syncedUsers = await this.prismaService.token.findMany({
-      where: { sync: true },
-    });
-
     // Init the syncMap with the synced users
     //--------------------------------------------------------------------------
-    this.syncService.initSync(syncedUsers);
+    await this.syncService.initSync();
     this.syncService.sync();
   }
 }
