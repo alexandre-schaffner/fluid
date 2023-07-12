@@ -18,7 +18,7 @@ import styles from './SelectPlaylist.module.css';
 axios.defaults.withCredentials = true;
 
 export const SelectPlaylist: Component = () => {
-  const menuItems = [{ name: "Fluid", link: "/" }];
+  // const menuItems = [{ name: "Fluid", link: "/" }];
 
   const [playlists, setPlaylists] = createSignal<PlaylistMetadata[]>([]);
 
@@ -31,7 +31,7 @@ export const SelectPlaylist: Component = () => {
 
   return (
     <PageContainer>
-      <Header items={menuItems} />
+      {/* <Header items={menuItems} /> */}
       <div class={styles.body}>
         <div class={styles.leftSide}>
           <div class={styles.title}>
@@ -51,6 +51,7 @@ export const SelectPlaylist: Component = () => {
                   name={playlist.name}
                   image={playlist.image}
                   length={playlist.length}
+                  id={playlist.id}
                 />
               )}
             </For>

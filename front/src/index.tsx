@@ -31,6 +31,7 @@ render(
           />
         </Route>
         <Route path="/playlist" component={SelectPlaylist} />
+        <Route path="/app" component={App} />
       </Routes>
     </Router>
   ),

@@ -6,10 +6,10 @@
 
 import type { Component } from "solid-js";
 
-import { Landing } from "../LandingPage/LandingPage";
-import styles from "./App.module.css";
+import axios from "axios";
 import { PageContainer } from "../../components/PageContainer/PageContainer";
 import { Header } from "../../components/Header/Header";
+import { Button } from "../../components/Button/Button";
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +21,13 @@ const App: Component = () => {
   return (
     <PageContainer>
       <Header items={[{ name: "Fluid", link: "http://localhost:3000/" }]} />
+      <Button label="Sync" clickHandler={async () => {
+        await axios.post('http://localhost:8000/platform/sync', {}, {
+          withCredentials: true
+        })
+      }
+    }
+      />
     </PageContainer>
   );
 };

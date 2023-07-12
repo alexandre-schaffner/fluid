@@ -1,13 +1,17 @@
 import { Module, OnModuleInit } from '@nestjs/common';
-import { SyncService } from './sync.service';
-import { SyncController } from './sync.controller';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { PrismaModule } from 'src/prisma/prisma.module';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { SpotifyModule } from 'src/spotify/spotify.module';
+import { YoutubeModule } from 'src/youtube/youtube.module';
+
+import { SyncController } from './sync.controller';
+import { SyncService } from './sync.service';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, YoutubeModule, SpotifyModule],
   providers: [SyncService],
   controllers: [SyncController],
+  exports: [SyncService],
 })
 export class SyncModule implements OnModuleInit {
   constructor(

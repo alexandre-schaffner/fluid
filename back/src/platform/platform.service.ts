@@ -1,16 +1,30 @@
+/*
+| Developed by Starton
+| Filename : platform.service.ts
+| Author : Alexandre Schaffner (alexandre.s@starton.com)
+*/
+
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import axios from 'axios';
-import querystring from 'querystring';
+import { SpotifyService } from 'src/spotify/spotify.service';
+import { SyncService } from 'src/sync/sync.service';
+
+/*
+|--------------------------------------------------------------------------
+| Music streaming platform service
+|--------------------------------------------------------------------------
+*/
 
 @Injectable()
 export class StreamingPlatformService {
-  private readonly encodedCredentials = Buffer.from(
-    `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`,
-  ).toString('base64');
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly spotifyService: SpotifyService,
+    private readonly syncService: SyncService,
+  ) {}
 
-  constructor(private readonly prismaService: PrismaService) {}
-
+  // Get user's playlist depending on the platform
+  //--------------------------------------------------------------------------
   async getPlaylists(userId: string) {
     try {
       const platform = await this.prismaService.platform.findFirstOrThrow({
@@ -26,25 +40,12 @@ export class StreamingPlatformService {
 
       switch (platform.type) {
         case 'SPOTIFY':
-          const accessToken = await axios.post(
-            'https://accounts.spotify.com/api/token',
-            querystring.stringify({
-              grant_type: 'refresh_token',
-              refresh_token: platform.refreshToken,
-            }),
-            {
-              headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: 'Basic ' + this.encodedCredentials,
-              },
-            },
-          );
-          return await this.getSpotifyPlaylists(
+          return await this.spotifyService.getPlaylists(
             platform.userUniqueRef,
-            accessToken.data.access_token,
+            platform.refreshToken,
           );
         case 'DEEZER':
-          return await this.getDeezerPlaylists(userId);
+          return;
       }
     } catch (err: unknown) {
       console.error(err);
@@ -52,34 +53,44 @@ export class StreamingPlatformService {
     }
   }
 
-  async getSpotifyPlaylists(userUniqueRef: string, accessToken: string) {
-    const res = await axios.get(
-      `https://api.spotify.com/v1/users/${userUniqueRef}/playlists`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
+  // Set the playilst to sync
+  //--------------------------------------------------------------------------
+  async setPlaylist(userId: string, playlistId: string) {
+    try {
+      const platform = await this.prismaService.platform.findFirstOrThrow({
+        where: {
+          userId,
         },
-      },
-    );
-
-    const playlists = [];
-    for (const item of res.data.items) {
-      playlists.push({
-        href: item.href,
-        name: item.name,
-        description: item.description,
-        length: item.tracks.total,
-        image: item.images[0].url,
+        select: {
+          type: true,
+          refreshToken: true,
+          userUniqueRef: true,
+        },
       });
+
+      switch (platform.type) {
+        case 'SPOTIFY':
+          return await this.spotifyService.setPlaylist(userId, playlistId);
+        case 'DEEZER':
+          return;
+      }
+    } catch (err: unknown) {
+      console.error(err);
+      return null;
     }
-    return playlists;
   }
 
-  async getDeezerPlaylists(userId: string) {
-    return;
-  }
-
-  getSyncPlaylist() {
-    return 'sync-playlists';
+  // Set the sync status
+  //--------------------------------------------------------------------------
+  async setSync(userId: string, sync: boolean) {
+    await this.prismaService.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        sync,
+      },
+    });
+    this.syncService.enableSync(userId);
   }
 }

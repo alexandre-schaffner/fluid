@@ -1,16 +1,13 @@
-import { youtube_v3 } from 'googleapis';
+import { Video } from 'src/contracts/Video';
 
-export const getArtist = (
-  snippet: youtube_v3.Schema$VideoSnippet,
-): string | null => {
+export const getArtist = (video: Video): string | null => {
   let artist = null;
 
-  if (snippet.title!.includes(' - '))
-    artist = snippet.title!.split(' - ')[0].trim();
-  else if (snippet.title!.includes(' | '))
-    artist = snippet.title!.split(' | ')[0].trim();
-  else if (snippet.categoryId === '10') {
-    artist = snippet.channelTitle!;
+  if (video.title.includes(' - ')) artist = video.title.split(' - ')[0].trim();
+  else if (video.title.includes(' | '))
+    artist = video.title.split(' | ')[0].trim();
+  else if (video.categoryId === '10') {
+    artist = video.channelTitle;
     if (artist.includes(' - ')) artist = artist.split(' - ')[0].trim();
   }
 

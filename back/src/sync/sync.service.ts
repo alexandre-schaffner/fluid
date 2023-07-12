@@ -6,15 +6,20 @@
 
 import { Injectable } from '@nestjs/common';
 import { Interval, SchedulerRegistry } from '@nestjs/schedule';
+import axios from 'axios';
 import { google } from 'googleapis';
+import querystring from 'querystring';
 import { SyncEntry } from 'src/contracts/SyncEntry';
+import { Video } from 'src/contracts/Video';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { SpotifyService } from 'src/spotify/spotify.service';
 import { getArtist } from 'src/utils/getArtist';
 import { getTitle } from 'src/utils/getTitle';
+import { YoutubeService } from 'src/youtube/youtube.service';
 
 /*
 |--------------------------------------------------------------------------
-| SYNCING SERVICE
+| Syncing service
 |--------------------------------------------------------------------------
 */
 
@@ -23,50 +28,103 @@ export class SyncService {
   private readonly syncMap: Map<string, SyncEntry> = new Map();
 
   constructor(
-    private readonly schedulerRegistry: SchedulerRegistry,
     private readonly prismaService: PrismaService,
+    private readonly youtubeService: YoutubeService,
+    private readonly spotifyService: SpotifyService,
   ) {}
 
   // Sync every 3 minutes
   //--------------------------------------------------------------------------
-  @Interval('sync', 1000 * 60 * 3)
+  @Interval('sync', 1000 * 30)
   async sync() {
-    console.log('syncing');
-
-    // Iterate over the syncMap
+    // Iterate over the syncMap (one loop = one user)
     //--------------------------------------------------------------------------
     for (const [key, value] of this.syncMap.entries()) {
-      // Retrieve the list of the title of the last 5 liked videos by the user
+      // Retrieve the list of the last 5 videos liked by the user
       //--------------------------------------------------------------------------
-      const list = await value.youtube.videos.list(
-        {
-          part: ['snippet'],
-          fields:
-            'items(snippet/title,snippet/categoryId,snippet/channelTitle),etag',
-          myRating: 'like',
-        },
-        {
-          headers: { 'If-None-Match': value.etag },
-        },
-      );
-      if (list.status === 304) continue;
 
-      // TODO: Detect music videos and add them to the streaming platform
+      const {
+        lastLikedVideos,
+        etag,
+      }: { lastLikedVideos: Video[]; etag: string } =
+        await this.youtubeService.getLastLikedVideos(value.youtube, value.etag);
+
+      if (lastLikedVideos.length === 0) continue;
+
+      // Get Spotify access token
       //--------------------------------------------------------------------------
-      for (const item of list.data.items!) {
-        const artist = getArtist(item.snippet!);
-        const title = getTitle(item.snippet!);
+      const accessToken = await this.spotifyService.refreshAccessToken(
+        value.streamingPlatformRefreshToken,
+      );
+
+      for (const video of lastLikedVideos) {
+        // Check if the video has already been synced
+        //--------------------------------------------------------------------------
+        if (value.lastLikedVideosCache.includes(video)) continue;
+
+        // Try to retrieve an artist and a title from the video title
+        //--------------------------------------------------------------------------
+        const artist = getArtist(video);
+        const title = getTitle(video);
+
         if (!artist || !title) continue;
-        console.log('artist:', artist, 'title:', title);
+
+        // Search for the track on Spotify
+        //--------------------------------------------------------------------------
+        const queryStringified = querystring.stringify({
+          q: `artist:${artist} track:${title}`,
+          // q: `${artist} ${title}`,
+          type: 'track',
+          limit: 5,
+        });
+
+        const search = await axios.get(
+          `https://api.spotify.com/v1/search?${queryStringified}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
+        );
+
+        // Loop over the results and try to find the best match
+        //--------------------------------------------------------------------------
+        let bestMatch = '';
+        let bestMatchScore = 0;
+
+        for (const item of search.data.tracks.items) {
+          let score = 0;
+
+          if (item.artists.map((artist: any) => artist.name).includes(artist))
+            score++;
+          if (item.name === title) score++;
+
+          if (score > bestMatchScore) {
+            bestMatch = item.id;
+            bestMatchScore = score;
+          }
+        }
+
+        // Add the track to the playlist if it's not already in it
+        //--------------------------------------------------------------------------
+        if (
+          bestMatch &&
+          !(await this.spotifyService.isInPlaylist(
+            value.playlistId,
+            bestMatch,
+            accessToken,
+          ))
+        ) {
+          await this.spotifyService.addToPlaylist(
+            value.playlistId,
+            bestMatch,
+            accessToken,
+          );
+        }
       }
 
-      value.lastLikedVideosCache = list.data.items!.map((item) => {
-        return {
-          title: item.snippet!.title!,
-          categoryId: item.snippet!.categoryId!,
-        };
-      });
-      value.etag = list.data.etag!;
+      value.lastLikedVideosCache = lastLikedVideos;
+      value.etag = etag;
 
       this.syncMap.set(key, value);
     }
@@ -80,13 +138,18 @@ export class SyncService {
       include: { Platform: true, YouTubeToken: true },
     });
 
-    console.log(tokens);
-
     for (const item of tokens) {
       if (!item.YouTubeToken || !item.Platform) {
-        console.error(`Cannot sync ${item.id}: the user has token(s) missing.`);
+        console.error(`Cannot sync ${item.id}: the user has missing token(s).`);
         continue;
       }
+      if (!item.Platform.playlistUniqueRef) {
+        console.error(
+          `Cannot sync ${item.id}: the user has not set a playlist to sync.`,
+        );
+        continue;
+      }
+
       const googleClient = new google.auth.OAuth2(
         process.env.GOOGLE_CLIENT_ID,
         process.env.GOOGLE_CLIENT_SECRET,
@@ -107,6 +170,8 @@ export class SyncService {
         streamingPlatformRefreshToken: item.Platform.refreshToken,
         etag: undefined,
         lastLikedVideosCache: [],
+        playlistId: item.Platform.playlistUniqueRef,
+        platform: item.Platform.type,
       });
     }
   }
@@ -120,21 +185,33 @@ export class SyncService {
       process.env.GOOGLE_REDIRECT_URI,
     );
 
-    const youtubeRefreshToken = (
-      await this.prismaService.youTubeToken.findUniqueOrThrow({
-        where: { userId },
-        select: { refreshToken: true },
-      })
-    ).refreshToken;
-    const platformRefreshToken = (
-      await this.prismaService.platform.findUniqueOrThrow({
-        where: { userId },
-        select: { refreshToken: true },
-      })
-    ).refreshToken;
+    const tokens = await this.prismaService.user.findUniqueOrThrow({
+      where: { id: userId },
+      include: {
+        Platform: {
+          select: { refreshToken: true, playlistUniqueRef: true, type: true },
+        },
+        YouTubeToken: { select: { refreshToken: true } },
+      },
+    });
+
+    const youtubeRefreshToken = tokens.YouTubeToken?.refreshToken;
+    const platformRefreshToken = tokens.Platform?.refreshToken;
+    const playlistId = tokens.Platform?.playlistUniqueRef;
+    const platform = tokens.Platform?.type;
+
+    if (
+      !youtubeRefreshToken ||
+      !platformRefreshToken ||
+      !playlistId ||
+      !platform
+    )
+      throw new Error(
+        'Cannot sync: the user has not connected its music streaming platform or has not set a playlist to sync.',
+      );
 
     googleClient.setCredentials({
-      refresh_token: youtubeRefreshToken,
+      refresh_token: tokens.YouTubeToken?.refreshToken,
     });
 
     const youtube = google.youtube({
@@ -147,6 +224,8 @@ export class SyncService {
       streamingPlatformRefreshToken: platformRefreshToken,
       etag: undefined,
       lastLikedVideosCache: [],
+      playlistId,
+      platform,
     });
 
     // TODO: Use an interceptor to make db request after the response is sent

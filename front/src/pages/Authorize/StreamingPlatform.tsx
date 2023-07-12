@@ -1,15 +1,19 @@
-import { createEffect, createSignal, Show } from "solid-js";
+/*
+| Developed by Starton
+| Filename : StreamingPlatform.tsx
+| Author : Alexandre Schaffner (alexandre.s@starton.com)
+*/
 
 import { Button } from "../../components/Button/Button";
 import { Divider } from "../../components/Divider/Divider";
 import { Header } from "../../components/Header/Header";
-import { Typography, Variant } from "../../components/Typography/Typography";
+import { Typography } from "../../components/Typography/Typography";
 import styles from "./StreamingPlatform.module.css";
 import { PageContainer } from "../../components/PageContainer/PageContainer";
 
 const spotifyClientId = '6b99eeab69c44b28aa9187b60312acef'
 const spotifyScopes = 'user-read-private%20user-read-email%20playlist-modify-public%20playlist-modify-private'
-const spotifyRedirectUri = 'http://localhost:8000/auth/webhook/spotify/code'
+const spotifyRedirectUri = 'http://localhost:8000/spotify/webhook/authorize'
 
 export const AuthorizeStreamingPlatform = () => {
   const menuItems = [{ name: "Fluid", link: "/" }];

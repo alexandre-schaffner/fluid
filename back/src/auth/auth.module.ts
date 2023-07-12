@@ -4,6 +4,7 @@ import { AuthService } from './auth.service';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { JwtModule } from '@nestjs/jwt';
 import { VerifyJwtGuard } from 'src/guards/verify-jwt.guard';
+import { YoutubeModule } from 'src/youtube/youtube.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { VerifyJwtGuard } from 'src/guards/verify-jwt.guard';
       secret: process.env.JWT_SECRET,
       global: true,
     }),
+    YoutubeModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, VerifyJwtGuard],

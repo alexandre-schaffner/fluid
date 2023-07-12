@@ -1,10 +1,10 @@
 .playlist {
     display: flex;
+    height: 64px;
     flex-direction: row;
     align-items: flex-start;
     justify-content: flex-start;
     gap: var(--size-gap);
-    /* border-bottom: 1px solid var(--color-border); */
     padding: var(--size-padding);
     border-radius: var(--size-border-radius);
     background-color: var(--color-component-background);
@@ -13,6 +13,10 @@
 .playlist:hover {
     background-color: var(--color-component-background-hovered);
     cursor: pointer;
+}
+
+.playlist:active {
+    background-color: var(--color-component-background-selected);
 }
 
 .metadata {

@@ -1,13 +1,12 @@
-import { youtube_v3 } from 'googleapis';
+import { Video } from 'src/contracts/Video';
 
-export const getTitle = (snippet: youtube_v3.Schema$VideoSnippet) => {
+export const getTitle = (video: Video) => {
   let title = null;
 
-  if (snippet.title!.includes(' - '))
-    title = snippet.title!.split(' - ')[1].trim();
-  else if (snippet.title!.includes(' | '))
-    title = snippet.title!.split(' | ')[1].trim();
-  else if (snippet.categoryId === '10') title = snippet.title;
+  if (video.title!.includes(' - ')) title = video.title!.split(' - ')[1].trim();
+  else if (video.title!.includes(' | '))
+    title = video.title!.split(' | ')[1].trim();
+  else if (video.categoryId === '10') title = video.title;
 
   if (title) {
     const regex = /( (\(.*|ft.*|feat.*|x.*)|,.*)/gi;
