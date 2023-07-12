@@ -5,7 +5,7 @@
 */
 
 import { Injectable } from '@nestjs/common';
-import { Interval, SchedulerRegistry } from '@nestjs/schedule';
+import { Interval } from '@nestjs/schedule';
 import axios from 'axios';
 import { google } from 'googleapis';
 import querystring from 'querystring';
