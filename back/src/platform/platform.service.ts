@@ -91,6 +91,9 @@ export class StreamingPlatformService {
         sync,
       },
     });
+    if (!sync) {
+      return this.syncService.disableSync(userId);
+    }
     this.syncService.enableSync(userId);
   }
 }

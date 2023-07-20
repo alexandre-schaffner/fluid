@@ -118,6 +118,8 @@ export class SpotifyService {
         length: item.tracks.total,
         image: item.images[0]?.url,
         id: item.id,
+        tracks: [],
+        isSync: false,
       });
     }
 

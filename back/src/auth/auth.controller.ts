@@ -8,7 +8,7 @@ import { Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
 import {
   authorizeStreamingPlatformPage,
   authorizeYouTubePage,
-  selectPlaylistPage,
+  homePage,
 } from 'constants.json';
 import { createHmac } from 'crypto';
 import { FastifyReply, FastifyRequest } from 'fastify';
@@ -82,7 +82,7 @@ export class AuthController {
     if (youtubeRefreshToken && !streamingPlatformRefreshToken)
       return res.status(302).redirect(authorizeStreamingPlatformPage);
     else if (youtubeRefreshToken && streamingPlatformRefreshToken)
-      return res.status(302).redirect(selectPlaylistPage);
+      return res.status(302).redirect(homePage);
     return res
       .status(302)
       .redirect(

@@ -16,6 +16,7 @@ export const Playlist: Component<{
       class={
         "flex w-full gap-4 rounded-md from-blue-800 to-blue-500 p-2 hover:cursor-pointer hover:bg-gradient-to-r"
       }
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onClick={async () => {
         await axios.post(
           "http://localhost:8000/platform/playlist/set",

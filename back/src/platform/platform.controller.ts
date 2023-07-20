@@ -44,8 +44,10 @@ export class StreamingPlatformController {
     );
   }
 
+  @UseGuards(VerifyJwtGuard)
   @Delete('sync')
   async unsyncPlaylist(@Req() req: FastifyRequest) {
+    console.log('unsync');
     await this.streamingPlatformService.setSync(
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       req.user!.sub,
