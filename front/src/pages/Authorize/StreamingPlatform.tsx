@@ -4,48 +4,42 @@
 | Author : Alexandre Schaffner (alexandre.s@starton.com)
 */
 
-import { Button } from "../../components/Button/Button";
-import { Divider } from "../../components/Divider/Divider";
-import { Header } from "../../components/Header/Header";
-import { Typography } from "../../components/Typography/Typography";
-import styles from "./StreamingPlatform.module.css";
-import { PageContainer } from "../../components/PageContainer/PageContainer";
+import { type JSXElement } from 'solid-js';
 
-const spotifyClientId = '6b99eeab69c44b28aa9187b60312acef'
-const spotifyScopes = 'user-read-private%20user-read-email%20playlist-modify-public%20playlist-modify-private'
-const spotifyRedirectUri = 'http://localhost:8000/spotify/webhook/authorize'
+import { Button } from '../../components/Button/Button';
+import { Typography } from '../../components/Typography/Typography';
 
-export const AuthorizeStreamingPlatform = () => {
-  const menuItems = [{ name: "Fluid", link: "/" }];
+const spotifyClientId = "6b99eeab69c44b28aa9187b60312acef";
+const spotifyScopes =
+  "user-read-private%20user-read-email%20playlist-modify-public%20playlist-modify-private";
+const spotifyRedirectUri = "http://localhost:8000/spotify/webhook/authorize";
 
+export const AuthorizeStreamingPlatform = (): JSXElement => {
   return (
-    <PageContainer>
-      <Header items={menuItems} />
-      <div class={styles.body}>
-        <div class={styles.content}>
-          <Typography variation={"title"}>Last step !</Typography>
-
-          <Typography variation={"subtitle"}>
+    <div
+      class={"flex h-screen w-screen bg-slate-950 bg-cccircularRight bg-cover bg-left"}
+    >
+      <div class={"ml-32 mt-16 flex max-w-xl basis-1/2 flex-col gap-y-2"}>
+        <div>
+          <Typography variation={"title"}>
+            Don't worry, it's the last step
+          </Typography>
+        </div>
+        <div class={"max-w-lg"}>
+          <Typography>
             Fluid need access to your streaming platform in order to
             automatically manage your playlists.
           </Typography>
-          <Divider />
-          <div class={styles.platforms}>
-            <Button
-              label="Spotify"
-              clickHandler={() =>
-                (document.location.href =
-                  `https://accounts.spotify.com/authorize?response_type=code&client_id=${spotifyClientId}&scope=${spotifyScopes}&redirect_uri=${spotifyRedirectUri}`)
-              }
-            />
-            <Button
-              label="Deezer"
-              clickHandler={() => console.log("Authorize Deezer")}
-            />
-          </div>
         </div>
-        {/* <Footer /> */}
+        <div class="mt-8">
+          <Button
+            label="Authorize Spotify"
+            clickHandler={() =>
+              (document.location.href = `https://accounts.spotify.com/authorize?response_type=code&client_id=${spotifyClientId}&scope=${spotifyScopes}&redirect_uri=${spotifyRedirectUri}`)
+            }
+          />
+        </div>
       </div>
-    </PageContainer>
+    </div>
   );
 };

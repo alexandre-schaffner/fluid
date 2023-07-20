@@ -4,60 +4,57 @@
 | Author : Alexandre Schaffner (alexandre.s@starton.com)
 */
 
-import axios from 'axios';
-import { Component, createSignal, For, onMount } from 'solid-js';
+import axios from "axios";
+import { type Component, createSignal, onMount, For } from "solid-js";
 
-import { Divider } from '../../components/Divider/Divider';
-import { Header } from '../../components/Header/Header';
-import { PageContainer } from '../../components/PageContainer/PageContainer';
-import { Typography } from '../../components/Typography/Typography';
-import { PlaylistMetadata } from '../../contracts/PlaylistMetadata';
-import { Playlist } from './components/Playlist';
-import styles from './SelectPlaylist.module.css';
+import { Typography } from "../../components/Typography/Typography";
+import { type PlaylistMetadata } from "../../contracts/PlaylistMetadata";
+import { Playlist } from "./components/Playlist";
+import { Divider } from "../../components/Divider/Divider";
 
 axios.defaults.withCredentials = true;
 
 export const SelectPlaylist: Component = () => {
-  // const menuItems = [{ name: "Fluid", link: "/" }];
-
   const [playlists, setPlaylists] = createSignal<PlaylistMetadata[]>([]);
 
   onMount(async () => {
     const res = await axios.get("http://localhost:8000/platform/playlists", {
-      withCredentials: true
+      withCredentials: true,
     });
     setPlaylists(res.data.playlists);
-  })
+  });
 
   return (
-    <PageContainer>
-      {/* <Header items={menuItems} /> */}
-      <div class={styles.body}>
-        <div class={styles.leftSide}>
-          <div class={styles.title}>
-            <Typography variation={"title"}>Choose a playlist</Typography>
-            <Typography variation={"subtitle"}>
-              Your music discoveries will be added to this playlist.
-            </Typography>
+    <div
+      class={
+        "flex h-screen w-screen content-start justify-center bg-slate-950 bg-cccircularCenter bg-cover bg-no-repeat bg-center"
+      }
+    >
+      <div
+        class={
+          "flex mt-64 h-fit w-full max-w-xl flex-col gap-y-2 rounded-xl bg-slate-900 p-4 border border-slate-800 shadow-md"
+        }
+      >
+        <div class={"flex flex-col gap-y-4 mb-2"}>
+          <div class="flex flex-col gap-y-2">
+          <Typography variation="cardTitle">Choose a playlist</Typography>
+          <Typography>
+            Fluid will automatically save musics you like on YouTube to this playlist.
+          </Typography>
           </div>
+          <Divider />
         </div>
-        <div class={styles.rightSide}>
-          <div class={styles.playlistsContainer}>
-            <Typography>Your playlists</Typography>
-            <Divider />
-            <For each={playlists()}>
-              {(playlist) => (
-                <Playlist
-                  name={playlist.name}
-                  image={playlist.image}
-                  length={playlist.length}
-                  id={playlist.id}
-                />
-              )}
-            </For>
-          </div>
-        </div>
+        <For each={playlists()}>
+          {(playlist) => (
+            <Playlist
+              name={playlist.name}
+              image={playlist.image}
+              length={playlist.length}
+              id={playlist.id}
+            />
+          )}
+        </For>
       </div>
-    </PageContainer>
+    </div>
   );
 };

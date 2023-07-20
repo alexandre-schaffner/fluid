@@ -1,5 +1,5 @@
-import { Component } from "solid-js";
-import styles from "./Divider.module.css";
-export const Divider: Component<{}> = () => {
-  return <div class={styles.divider} />;
+import { type Component } from "solid-js";
+
+export const Divider: Component = () => {
+  return <div class={'w-full border border-slate-800'} />;
 };

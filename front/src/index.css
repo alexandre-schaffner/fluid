@@ -1,4 +1,8 @@
-@font-face {
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* @font-face {
   font-family: Chivo-Light;
   src: url(/Users/alexandreschaffner/Projects/fluid/front/src/static/fonts/Chivo-Light.ttf);
 }
@@ -52,4 +56,4 @@ body {
   font-size: var(--size-font-body);
   font-family: Chivo-Light;
   color: var(--color-text-low-contrast);
-}
+} */

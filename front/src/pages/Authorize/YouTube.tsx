@@ -1,18 +1,18 @@
+import { useSearchParams } from "@solidjs/router";
+import { type Component, createSignal, Show } from "solid-js";
+
+import { Button } from "../../components/Button/Button";
+import { Divider } from "../../components/Divider/Divider";
+import { Header } from "../../components/Header/Header";
+import { PageContainer } from "../../components/PageContainer/PageContainer";
+import { Typography } from "../../components/Typography/Typography";
+import styles from "./Youtube.module.css";
+
 /*
 | Developed by Starton
 | Filename : YouTube.tsx
 | Author : Alexandre Schaffner (alexandre.s@starton.com)
 */
-
-import { Component, createEffect, createSignal, Show } from "solid-js";
-
-import { Divider } from "../../components/Divider/Divider";
-import { Header } from "../../components/Header/Header";
-import { Typography } from "../../components/Typography/Typography";
-import styles from "./Youtube.module.css";
-import { Button } from "../../components/Button/Button";
-import { useSearchParams } from "@solidjs/router";
-import { PageContainer } from "../../components/PageContainer/PageContainer";
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +21,7 @@ import { PageContainer } from "../../components/PageContainer/PageContainer";
 */
 
 export const AuthorizeYouTube: Component = () => {
-  const menuItems = [{ name: "Fluid", link: "/" }];
+  // const menuItems = [{ name: "Fluid", link: "/" }];
   const [width, setWidth] = createSignal(window.screen.availWidth);
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -34,45 +34,34 @@ export const AuthorizeYouTube: Component = () => {
       "205349973317-s5h03qvn3hlnjhoe52nu66aso811nlml.apps.googleusercontent.com",
     scope: "https://www.googleapis.com/auth/youtube.readonly",
     ux_mode: "redirect",
-    redirect_uri: "http://localhost:8000/auth/webhook/authorize/youtube",
-    state: state,
+    redirect_uri: "http://localhost:8000/youtube/webhook/authorize",
+    state,
   });
 
   return (
-    <PageContainer>
-      <Header items={menuItems} />
-      <div class={styles.body}>
-        <div class={styles.content}>
-          <Typography variation={"title"}>
-            Welcome {user},
-            <br />
-          </Typography>
-
-          <Typography variation={"subtitle"}>
+    <div
+      class={
+        "flex h-screen w-screen justify-between bg-slate-950 bg-cccircularRight bg-cover"
+      }
+    >
+      <div class={"ml-32 mt-16 flex max-w-xl basis-1/2 flex-col gap-y-2"}>
+        <div>
+          <Typography variation={"title"}>Welcome {user},</Typography>
+        </div>
+        <div class={"max-w-lg"}>
+          <Typography>
             Fluid requires access to your YouTube account in order to track
             music you like.
           </Typography>
-          <Divider />
-          <Show when={width() <= 992}>
-            <div class={styles.getStarted}>
-              <Button
-                label="Authorize YouTube"
-                clickHandler={() => client.requestCode()}
-              />
-            </div>
-          </Show>
         </div>
-        <Show when={width() > 992}>
-          <div class={styles.getStarted}>
-            <Button
-              label="Authorize YouTube"
-              clickHandler={() => client.requestCode()}
-            />
-          </div>
-        </Show>
-        {/* <Footer /> */}
+        <div class="mt-8">
+          <Button
+            label="Authorize YouTube"
+            clickHandler={() => client.requestCode()}
+          />
+        </div>
       </div>
-    </PageContainer>
+    </div>
   );
 };
 

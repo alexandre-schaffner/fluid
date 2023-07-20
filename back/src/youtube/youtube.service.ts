@@ -22,6 +22,7 @@ export class YoutubeService {
       const { tokens } = await this.googleAuthClient.getToken(code);
 
       if (!tokens.refresh_token) throw new MissingDataError('refresh_token');
+
       await this.prismaService.youTubeToken.create({
         data: {
           refreshToken: tokens.refresh_token,

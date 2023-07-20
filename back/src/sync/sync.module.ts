@@ -22,6 +22,6 @@ export class SyncModule implements OnModuleInit {
     // Init the syncMap with the synced users
     //--------------------------------------------------------------------------
     await this.syncService.initSync();
-    this.syncService.sync();
+    await this.syncService.sync();
   }
 }

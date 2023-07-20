@@ -1,4 +1,4 @@
-@font-face {
+/* @font-face {
   font-family: Chivo-Regular;
   src: url(/Users/alexandreschaffner/Projects/fluid/front/src/static/fonts/Chivo-Regular.ttf);
 }
@@ -20,4 +20,4 @@ h2 {
 p {
   font-size: var(--size-font);
   color: var(--color-text-high-contrast);
-}
+} */

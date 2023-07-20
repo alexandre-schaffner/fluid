@@ -1,17 +1,14 @@
 /*
 | Developed by Starton
-| Filename : Landing.tsx
+| Filename : LandingPage.tsx
 | Author : Alexandre Schaffner (alexandre.s@starton.com)
 */
 
-import { Component, createEffect, createSignal, Show } from "solid-js";
+import { type Component, createEffect, createSignal } from 'solid-js';
 
-import { Divider } from "../../components/Divider/Divider";
-import { Header } from "../../components/Header/Header";
-import { SignInWithGoogle } from "../../components/SignInWithGoogle/SignInWithGoogle";
-import { Typography, Variant } from "../../components/Typography/Typography";
-import styles from "./LandingPage.module.css";
-import { PageContainer } from "../../components/PageContainer/PageContainer";
+import { SignInWithGoogle } from '../../components/SignInWithGoogle/SignInWithGoogle';
+import { Typography } from '../../components/Typography/Typography';
+
 
 /*
 |--------------------------------------------------------------------------
@@ -20,10 +17,10 @@ import { PageContainer } from "../../components/PageContainer/PageContainer";
 */
 
 export const Landing: Component = () => {
-  const menuItems = [{ name: "Fluid", link: "/" }];
-  const [width, setWidth] = createSignal(window.screen.availWidth);
-
   const ogWindowSize = window.screen.availWidth;
+
+  const [width, setWidth] = createSignal(ogWindowSize);
+
   window.addEventListener("resize", () => setWidth(window.screen.availWidth));
 
   createEffect(() => {
@@ -32,34 +29,26 @@ export const Landing: Component = () => {
   });
 
   return (
-    <PageContainer>
-      <Header items={menuItems} />
-      <div class={styles.body}>
-        <div class={styles.content}>
-          <Typography variation="title">
-            Discover on YouTube, enjoy on Spotify
-          </Typography>
-
-          <Typography variation="subtitle">
-            Fluid automatically saves your YouTube music discoveries to a
-            Spotify playlist of your choice.
-          </Typography>
-          <Divider />
-          <Typography>Sign-in with Google to get started.</Typography>
-          <Show when={width() <= 992}>
-            <div class={styles.getStarted}>
-              <SignInWithGoogle />
-            </div>
-          </Show>
-        </div>
-        <Show when={width() > 992}>
-          <div class={styles.getStarted}>
-            <SignInWithGoogle />
-          </div>
-        </Show>
-        {/* <Footer /> */}
+    <div
+      class={
+        "flex h-screen flex-col items-center justify-start bg-slate-900 bg-cccircularTop bg-cover bg-center"
+      }
+    >
+      <div class={"flex flex-col mt-8 max-w-xl text-center gap-y-4"}>
+        <Typography variation="title">Fluid</Typography>
+        <Typography variation="subtitle">
+          Discover on YouTube, enjoy on Spotify.
+        </Typography>
       </div>
-    </PageContainer>
+
+      <div class={"fixed flex flex-col h-full justify-center w-full max-w-sm text-center gap-6 items-center"}>
+        {/* <Typography>
+          Fluid automatically saves your YouTube music discoveries to a
+          Spotify playlist of your choice.
+        </Typography> */}
+        <SignInWithGoogle />
+      </div>
+    </div>
   );
 };
 

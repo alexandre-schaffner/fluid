@@ -51,7 +51,7 @@ export class AuthController {
 
     // The state parameter is the signed hash of the JWT
     //--------------------------------------------------------------------------
-    const signedJwtHash = hash.update(JSON.stringify(jwt)).digest('hex');
+    const signedJwtHash = hash.update(jwt).digest('hex');
 
     // Set the JWT as an httpOnly cookie
     //--------------------------------------------------------------------------

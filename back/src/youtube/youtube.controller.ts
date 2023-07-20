@@ -59,15 +59,6 @@ export class YoutubeController {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     await this.youtubeService.exchangeCodeForTokens(code, req.user!.sub!);
 
-    const youtubeRefreshToken = (
-      await this.prismaService.youTubeToken.findUnique({
-        //--------------------------------------------------------------------------
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        where: { userId: req.user!.sub! },
-        select: { refreshToken: true },
-      })
-    )?.refreshToken;
-
     const streamingPlatformRefreshToken = (
       await this.prismaService.platform.findUnique({
         //--------------------------------------------------------------------------
@@ -77,10 +68,8 @@ export class YoutubeController {
       })
     )?.refreshToken;
 
-    if (youtubeRefreshToken && !streamingPlatformRefreshToken) {
+    if (!streamingPlatformRefreshToken)
       res.status(302).redirect(authorizeStreamingPlatformPage);
-    } else if (youtubeRefreshToken && streamingPlatformRefreshToken) {
-      res.status(302).redirect(selectPlaylistPage);
-    }
+    else res.status(302).redirect(selectPlaylistPage);
   }
 }
