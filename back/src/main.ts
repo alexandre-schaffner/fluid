@@ -19,13 +19,6 @@ async function bootstrap() {
   await app.register(cors, {
     origin: 'http://localhost:3000',
     credentials: true,
-    // allowedHeaders: [
-    //   'Content-Type',
-    //   'Authorization',
-    //   'Set-Cookie',
-    //   'Cookie',
-    //   'Origin',
-    // ],
   });
 
   app.useGlobalPipes(new ValidationPipe());

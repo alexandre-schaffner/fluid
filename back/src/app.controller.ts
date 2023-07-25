@@ -2,7 +2,7 @@ import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { MeDto } from './contracts/Me.dto';
 import { VerifyJwtGuard } from './guards/verify-jwt.guard';
-import { FastifyRequest, FastifyReply } from 'fastify';
+import { FastifyRequest } from 'fastify';
 
 @Controller()
 export class AppController {
