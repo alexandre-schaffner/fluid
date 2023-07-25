@@ -32,10 +32,10 @@ export class AppService {
       id: user.id,
       name: user.name,
       isSync: user.sync,
-      playlist: playlists,
+      playlists: playlists,
     };
 
-    for (const playlist of me.playlist) {
+    for (const playlist of me.playlists) {
       playlist.isSync =
         user.Platform.playlistUniqueRef === playlist.id ? true : false;
     }

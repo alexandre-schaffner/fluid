@@ -1,18 +1,14 @@
-import { useSearchParams } from "@solidjs/router";
-import { type Component, createSignal, Show } from "solid-js";
-
-import { Button } from "../../components/Button/Button";
-import { Divider } from "../../components/Divider/Divider";
-import { Header } from "../../components/Header/Header";
-import { PageContainer } from "../../components/PageContainer/PageContainer";
-import { Typography } from "../../components/Typography/Typography";
-import styles from "./Youtube.module.css";
-
 /*
 | Developed by Starton
 | Filename : YouTube.tsx
 | Author : Alexandre Schaffner (alexandre.s@starton.com)
 */
+
+import { useSearchParams } from '@solidjs/router';
+import { type Component, createSignal } from 'solid-js';
+
+import { Button } from '../../components/Button/Button';
+import { Typography } from '../../components/Typography/Typography';
 
 /*
 |--------------------------------------------------------------------------
@@ -54,8 +50,9 @@ export const AuthorizeYouTube: Component = () => {
             music you like.
           </Typography>
         </div>
-        <div class="mt-8">
+        <div class="mt-8 w-64">
           <Button
+            style='solid'
             label="Authorize YouTube"
             clickHandler={() => client.requestCode()}
           />

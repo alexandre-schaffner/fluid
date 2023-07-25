@@ -1,20 +1,48 @@
-import { type Component } from "solid-js";
+/*
+| Developed by Starton
+| Filename : Button.tsx
+| Author : Alexandre Schaffner (alexandre.s@starton.com)
+*/
 
-import { Typography } from "../Typography/Typography";
+import { type ParentComponent, splitProps } from 'solid-js';
 
-export const Button: Component<{ label: string; clickHandler: () => void }> = (
-  props,
-) => {
-  const { clickHandler, label } = props;
+import { Typography } from '../Typography/Typography';
+
+/*
+|--------------------------------------------------------------------------
+| Button
+|--------------------------------------------------------------------------
+*/
+
+
+// Props
+// --------------------------------------------------------------------------
+interface ButtonProps {
+  label?: string;
+  style: string;
+  clickHandler: () => void;
+}
+
+// Component
+// --------------------------------------------------------------------------
+export const Button: ParentComponent<ButtonProps> = (props) => {
+  const [local, others] = splitProps(props, ["label", "style", "clickHandler"]);
+  const children = props.children;
 
   return (
     <button
       class={
-        "max-h-fit w-64 rounded-lg border border-blue-500 hover:border-blue-400 bg-blue-600 p-4 hover:bg-blue-500"
+        "max-h-fit w-full rounded-md border border-blue-500 p-4 hover:border-blue-400"
       }
-      onClick={clickHandler}
+      onClick={local.clickHandler}
+      classList={{
+        "bg-slate-800": local.style === "outline",
+        "hover:bg-slate-700": local.style === "outline",
+        "bg-blue-600": local.style === "solid",
+        "hover:bg-blue-500": local.style === "solid",
+      }}
     >
-      <Typography>{label}</Typography>
+      {children ?? <Typography>{local.label}</Typography>}
     </button>
   );
 };

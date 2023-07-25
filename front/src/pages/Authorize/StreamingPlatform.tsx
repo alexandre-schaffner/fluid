@@ -31,8 +31,9 @@ export const AuthorizeStreamingPlatform = (): JSXElement => {
             automatically manage your playlists.
           </Typography>
         </div>
-        <div class="mt-8">
+        <div class="mt-8 w-64">
           <Button
+            style='solid'
             label="Authorize Spotify"
             clickHandler={() =>
               (document.location.href = `https://accounts.spotify.com/authorize?response_type=code&client_id=${spotifyClientId}&scope=${spotifyScopes}&redirect_uri=${spotifyRedirectUri}`)

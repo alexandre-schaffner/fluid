@@ -13,7 +13,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { selectPlaylistPage } from 'constants.json';
+import { homePage } from 'constants.json';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { VerifyJwtGuard } from 'src/guards/verify-jwt.guard';
 
@@ -44,7 +44,7 @@ export class SpotifyController {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     await this.spotifyService.exchangeCodeForTokens(code, req.user!.sub!);
 
-    return res.status(302).redirect(selectPlaylistPage);
+    return res.status(302).redirect(homePage);
   }
 
   // Set the playlist to sync

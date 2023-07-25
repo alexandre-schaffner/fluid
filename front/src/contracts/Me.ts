@@ -1,6 +1,6 @@
-import { PlaylistMetadata } from './PlaylistMetadata';
+import { type PlaylistMetadata } from "./PlaylistMetadata";
 
-export interface MeDto {
+export interface Me {
   id: string;
   name: string;
   playlists: PlaylistMetadata[];

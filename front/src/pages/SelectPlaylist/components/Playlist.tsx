@@ -1,15 +1,45 @@
-import axios from "axios";
-import { type Component } from "solid-js";
+/*
+| Developed by Starton
+| Filename : Playlist.tsx
+| Author : Alexandre Schaffner (alexandre.s@starton.com)
+*/
+
+import axios, { type AxiosInstance } from "axios";
+import { type Component, Show, splitProps } from "solid-js";
 
 import { Typography } from "../../../components/Typography/Typography";
+
+const axiosInstance: AxiosInstance = axios.create({
+  baseURL: "http://localhost:8000",
+  withCredentials: true,
+});
+
+/*
+|--------------------------------------------------------------------------
+| Playlist item
+|--------------------------------------------------------------------------
+*/
 
 export const Playlist: Component<{
   name: string;
   image?: string;
   length: number;
   id: string;
+  isSync?: boolean;
 }> = (props) => {
-  const { name, image, length, id } = props;
+  const [local, others] = splitProps(props, [
+    "name",
+    "image",
+    "length",
+    "id",
+    "isSync",
+  ]);
+
+  // Set the playlist to sync
+  // --------------------------------------------------------------------------
+  const setPlaylist = async (playlistId: string): Promise<void> => {
+    await axiosInstance.post("/platform/playlist/set", { playlistId });
+  };
 
   return (
     <div
@@ -18,21 +48,22 @@ export const Playlist: Component<{
       }
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onClick={async () => {
-        await axios.post(
-          "http://localhost:8000/platform/playlist/set",
-          { playlistId: id },
-          {
-            withCredentials: true,
-          },
-        );
-        document.location.href = '/app'
+        await setPlaylist(local.id);
       }}
     >
-      <img src={image ?? ""} class="w-16 rounded-sm" />
-      <div>
-        <Typography>{name}</Typography>
-        <Typography variation="small">{length} Songs</Typography>
+      <img src={local.image ?? ""} class="w-16 rounded-sm" />
+
+      <div class="w-1/2 flex-col">
+        <Typography>{local.name}</Typography>
+        <Typography variation="small">{local.length} Songs</Typography>
       </div>
+
+      <Show when={local.isSync}>
+        <div class="flex items-center gap-x-2">
+          <div class="h-2 w-2 rounded-full bg-green-400" />
+          <Typography variation="small">syncing</Typography>
+        </div>
+      </Show>
     </div>
   );
 };

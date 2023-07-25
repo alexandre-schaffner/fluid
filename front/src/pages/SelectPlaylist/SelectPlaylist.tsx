@@ -17,6 +17,7 @@ axios.defaults.withCredentials = true;
 export const SelectPlaylist: Component = () => {
   const [playlists, setPlaylists] = createSignal<PlaylistMetadata[]>([]);
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   onMount(async () => {
     const res = await axios.get("http://localhost:8000/platform/playlists", {
       withCredentials: true,

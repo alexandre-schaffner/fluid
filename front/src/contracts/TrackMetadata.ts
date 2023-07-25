@@ -1,4 +1,4 @@
-export interface TrackDto {
+export interface TrackMetadata {
   id: string;
   spotifyId: string;
   youtubeId: string;
