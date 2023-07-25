@@ -5,7 +5,6 @@
 */
 
 import { children, type ParentComponent } from "solid-js";
-import "./Typography.module.css";
 
 export enum Variant {
   Auto,

@@ -1,6 +1,5 @@
-import { Accessor, Component, For } from "solid-js";
-import styles from "./Header.module.css";
-import { A } from "@solidjs/router";
+import { A } from '@solidjs/router';
+import { type Accessor, type Component, For } from 'solid-js';
 
 interface MenuItem {
   name: string;
