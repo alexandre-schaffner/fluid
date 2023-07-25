@@ -9,7 +9,7 @@ import { type Component, createSignal, onMount, For } from "solid-js";
 
 import { Typography } from "../../components/Typography/Typography";
 import { type PlaylistMetadata } from "../../contracts/PlaylistMetadata";
-import { Playlist } from "./components/Playlist";
+import { Playlist } from "../../components/Playlist/Playlist";
 import { Divider } from "../../components/Divider/Divider";
 
 axios.defaults.withCredentials = true;

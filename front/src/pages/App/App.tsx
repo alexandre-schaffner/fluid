@@ -4,15 +4,15 @@
 | Author : Alexandre Schaffner (alexandre.s@starton.com)
 */
 
-import axios from "axios";
-import { type Component, createSignal, onMount, Show } from "solid-js";
+import axios from 'axios';
+import { type Component, onMount } from 'solid-js';
+import { createStore } from 'solid-js/store';
 
-import { Button } from "../../components/Button/Button";
-import { Divider } from "../../components/Divider/Divider";
-import { Typography } from "../../components/Typography/Typography";
-import { type Me } from "../../contracts/Me";
-import { PlaylistCard } from "./components/PlaylistCard";
-import { Header } from "./components/Header";
+import { Typography } from '../../components/Typography/Typography';
+import { type Me } from '../../contracts/Me';
+import { Header } from './components/Header';
+import { PlaylistCard } from './components/PlaylistCard';
+import { SyncCard } from './components/SyncCard';
 
 /*
 |--------------------------------------------------------------------------
@@ -27,7 +27,13 @@ const axiosInstance = axios.create({
 });
 
 const App: Component = () => {
-  const [me, setMe] = createSignal<Me | null>(null, { equals: false });
+  // const [me, setMe] = createSignal<Me | null>(null, { equals: false });
+  const [me, setMe] = createStore<Me>({
+    id: "",
+    name: "",
+    isSync: false,
+    playlists: [],
+  });
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   onMount(async () => {
@@ -40,47 +46,38 @@ const App: Component = () => {
     }
   });
 
+  const toggleSyncPlaylist = (playlistId: string): void => {
+    setMe({
+      ...me,
+      playlists: me.playlists.map((playlist) => {
+        if (playlist.id === playlistId || playlist.isSync)
+          return { ...playlist, isSync: !playlist.isSync };
+        return playlist;
+      }),
+    });
+  };
+
+  const toggleSyncStatus = async (): Promise<void> => {
+    if (me.isSync ?? false)
+      await axiosInstance.delete("platform/sync", {});
+    else await axiosInstance.post("/platform/sync", {});
+    setMe({ ...me, isSync: !me.isSync });
+  };
+
   return (
-    <div class="flex h-screen w-screen flex-wrap content-start items-start gap-4 bg-slate-950 bg-cccircularRight2 bg-cover bg-center pl-8 pt-2">
+    <div class="flex h-screen max-h-screen w-screen flex-wrap content-start items-start gap-4 bg-slate-950 bg-cccircularRight2 bg-cover bg-center pl-8 pt-2">
       <Header />
       <div class="mb-6 basis-full">
-        <Typography variation="title">Welcome, {me()?.name}</Typography>
+        <Typography variation="title">Welcome, {me.name}</Typography>
       </div>
 
-      <div class="flex max-w-xs flex-col gap-y-2 rounded-xl bg-slate-900 p-4">
-        <div class="mb-4 flex flex-col gap-y-2">
-          <Typography variation="cardTitle">Status</Typography>
-
-          <Typography>Sync your YouTube account with Fluid.</Typography>
-          <Divider />
-        </div>
-        <div class="flex basis-full justify-start">
-          <Button
-            style={((me()?.isSync) === true) ? "outline" : 'solid'}
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            clickHandler={async () => {
-              if (me()?.isSync ?? false)
-                await axios.delete("http://localhost:8000/platform/sync", {});
-              else await axios.post("http://localhost:8000/platform/sync", {});
-              setMe((prev) => {
-                if (prev === null) return null;
-                
-                prev.isSync = !prev.isSync;
-
-                return prev;
-              });
-            }}
-          >
-            <Show when={me()?.isSync} fallback={<Typography>Sync</Typography>}>
-              <Typography>Unsync</Typography>
-            </Show>
-          </Button>
-        </div>
-      </div>
+      {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
+      <SyncCard isSyncing={me.isSync} toggleSync={toggleSyncStatus} />
 
       <PlaylistCard
-        playlists={me()?.playlists ?? []}
-        isSyncing={me()?.isSync ?? false}
+        playlists={me.playlists ?? []}
+        isSyncing={me.isSync ?? false}
+        setSync={toggleSyncPlaylist}
       />
     </div>
   );

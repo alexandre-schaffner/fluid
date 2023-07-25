@@ -7,7 +7,7 @@
 import axios, { type AxiosInstance } from "axios";
 import { type Component, Show, splitProps } from "solid-js";
 
-import { Typography } from "../../../components/Typography/Typography";
+import { Typography } from "../Typography/Typography";
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: "http://localhost:8000",
@@ -25,22 +25,53 @@ export const Playlist: Component<{
   image?: string;
   length: number;
   id: string;
-  isSync?: boolean;
+  isSyncedPlaylist: boolean;
+  isSyncing: boolean;
+  toggleSync: (playlistId: string) => void;
 }> = (props) => {
   const [local, others] = splitProps(props, [
     "name",
     "image",
     "length",
     "id",
-    "isSync",
+    "isSyncedPlaylist",
+    "isSyncing",
   ]);
 
   // Set the playlist to sync
   // --------------------------------------------------------------------------
   const setPlaylist = async (playlistId: string): Promise<void> => {
     await axiosInstance.post("/platform/playlist/set", { playlistId });
+    others.toggleSync(playlistId);
   };
 
+  // Display when the playlist is syncing
+  // --------------------------------------------------------------------------
+  const SyncingLabel: Component = () => {
+    return (
+      <div class="flex items-center gap-x-2">
+        <div
+          class="h-2 w-2 rounded-full bg-green-400"
+          classList={{ "bg-orange-400": !local.isSyncing }}
+        />
+        <Typography variation="small">syncing</Typography>
+      </div>
+    );
+  };
+
+  // Display when the syncing is paused
+  // --------------------------------------------------------------------------
+  const SyncPaused: Component = () => {
+    return (
+      <div class="flex items-center gap-x-2">
+        <div class="h-2 w-2 rounded-full bg-orange-400" />
+        <Typography variation="small">sync paused</Typography>
+      </div>
+    );
+  };
+
+  // Component
+  // --------------------------------------------------------------------------
   return (
     <div
       class={
@@ -58,11 +89,10 @@ export const Playlist: Component<{
         <Typography variation="small">{local.length} Songs</Typography>
       </div>
 
-      <Show when={local.isSync}>
-        <div class="flex items-center gap-x-2">
-          <div class="h-2 w-2 rounded-full bg-green-400" />
-          <Typography variation="small">syncing</Typography>
-        </div>
+      <Show when={local.isSyncedPlaylist}>
+        <Show when={local.isSyncing} fallback={<SyncPaused />}>
+          <SyncingLabel />
+        </Show>
       </Show>
     </div>
   );

@@ -10,7 +10,7 @@ import { Button } from '../../../components/Button/Button';
 import { CardHeader } from '../../../components/Card/CardHeader';
 import { Divider } from '../../../components/Divider/Divider';
 import { type PlaylistMetadata } from '../../../contracts/PlaylistMetadata';
-import { Playlist } from '../../SelectPlaylist/components/Playlist';
+import { Playlist } from '../../../components/Playlist/Playlist';
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +21,7 @@ import { Playlist } from '../../SelectPlaylist/components/Playlist';
 interface PlaylistCardProps {
   playlists: PlaylistMetadata[];
   isSyncing: boolean;
+  setSync: (playlistId: string) => void;
 }
 
 export const PlaylistCard: Component<PlaylistCardProps> = (props) => {
@@ -33,6 +34,7 @@ export const PlaylistCard: Component<PlaylistCardProps> = (props) => {
         description="Fluid automatically saves music you like on YouTube to this playlist."
       />
 
+      <div class="flex max-h-96 flex-col overflow-y-scroll no-scrollbar">
       <For each={local.playlists}>
         {(playlist) => (
           <Playlist
@@ -40,11 +42,13 @@ export const PlaylistCard: Component<PlaylistCardProps> = (props) => {
             length={playlist.length}
             name={playlist.name}
             image={playlist.image}
-            isSync={playlist.isSync && local.isSyncing}
+            isSyncedPlaylist={playlist.isSync}
+            isSyncing={local.isSyncing}
+            toggleSync={others.setSync}
           />
         )}
       </For>
-
+      </div>
       <Divider />
 
       <div class="mt-2 flex w-64 flex-col self-end">

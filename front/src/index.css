@@ -2,58 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-/* @font-face {
-  font-family: Chivo-Light;
-  src: url(/Users/alexandreschaffner/Projects/fluid/front/src/static/fonts/Chivo-Light.ttf);
+@layer utilities {
+    /* Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+    }
 }
-
-a:visited {
-  color: var(--color-text-low-contrast-1);
-}
-
-a {
-  text-decoration: none;
-}
-
-#root {
-  height: 100%;
-}
-
-body {
-  --color-background: #fbfdff;
-  --color-background-2: #f5faff;
-  --color-component-background: #edf6ff;
-  --color-component-background-hovered: #e1f0ff;
-  --color-component-background-selected: #cee7fe;
-  --color-cta-background: #e1f0ff;
-  --color-cta-background-hovered: #cee7fe;
-  --color-cta-background-selected: #b7d9f8;
-  --color-border: #b7d9f8;
-  --color-border-interactive: #96c7f2;
-  --color-border-interactive-hovered: #5eb0ef;
-  --color-solid: #0091ff;
-  --color-solid-hovered: #0081f1;
-  --color-text-low-contrast: #687076;
-  --color-text-high-contrast: #11181c;
-  --color-text-low-contrast-2: #006adc;
-  --color-text-high-contrast-2: #00254d;
-
-  --size-font: 24px;
-  --size-font-title: 56px;
-  --size-font-subtitle: 32px;
-  --size-padding: 20px;
-  --size-padding-l: 40px;
-  --size-gap: 20px;
-  --size-margin-l: 20px;
-  --size-border-radius: 4px;
-  --size-border-radius-l: 8px;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  margin: 0;
-  height: 100vh;
-  max-height: 100vh;
-  background-color: var(--color-background);
-  font-size: var(--size-font-body);
-  font-family: Chivo-Light;
-  color: var(--color-text-low-contrast);
-} */
