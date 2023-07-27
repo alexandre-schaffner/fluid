@@ -9,6 +9,7 @@ import { type Component, createSignal } from 'solid-js';
 
 import { Button } from '../../components/Button/Button';
 import { Typography } from '../../components/Typography/Typography';
+import { backendHost } from '../../constants.json';
 
 /*
 |--------------------------------------------------------------------------
@@ -30,7 +31,7 @@ export const AuthorizeYouTube: Component = () => {
       "205349973317-s5h03qvn3hlnjhoe52nu66aso811nlml.apps.googleusercontent.com",
     scope: "https://www.googleapis.com/auth/youtube.readonly",
     ux_mode: "redirect",
-    redirect_uri: "http://localhost:8000/youtube/webhook/authorize",
+    redirect_uri: `${backendHost as string}/youtube/webhook/authorize`,
     state,
   });
 

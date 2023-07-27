@@ -14,8 +14,8 @@ export class verifyIdTokenGuard implements CanActivate {
       );
 
       const request = context.switchToHttp().getRequest();
-      const { body } = request;
-      const cookieCSRFToken = request.cookies['g_csrf_token'];
+      const { body, cookies } = request;
+      const cookieCSRFToken = cookies['g_csrf_token'];
 
       if (!cookieCSRFToken) {
         console.error('No CSRF token in cookie');

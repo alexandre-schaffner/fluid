@@ -8,11 +8,12 @@ import { type JSXElement } from 'solid-js';
 
 import { Button } from '../../components/Button/Button';
 import { Typography } from '../../components/Typography/Typography';
+import { backendHost } from '../../constants.json';
 
 const spotifyClientId = "6b99eeab69c44b28aa9187b60312acef";
 const spotifyScopes =
   "user-read-private%20user-read-email%20playlist-modify-public%20playlist-modify-private";
-const spotifyRedirectUri = "http://localhost:8000/spotify/webhook/authorize";
+const spotifyRedirectUri = `${backendHost as string}/spotify/webhook/authorize`;
 
 export const AuthorizeStreamingPlatform = (): JSXElement => {
   return (
