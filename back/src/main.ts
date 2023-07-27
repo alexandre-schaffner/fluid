@@ -17,7 +17,7 @@ async function bootstrap() {
 
   await app.register(fastifyCookie, {});
   await app.register(cors, {
-    origin: ['http://localhost:3000', 'https://fluid-plum.vercel.app/'],
+    origin: ['http://localhost:3000', 'https://fluid-plum.vercel.app'],
     credentials: true,
   });
 
