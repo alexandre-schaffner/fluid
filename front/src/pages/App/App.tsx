@@ -9,6 +9,7 @@ import { type Component, onMount } from 'solid-js';
 import { createStore } from 'solid-js/store';
 
 import { Typography } from '../../components/Typography/Typography';
+import { backendHost } from '../../constants.json';
 import { type Me } from '../../contracts/Me';
 import { Header } from './components/Header';
 import { PlaylistCard } from './components/PlaylistCard';
@@ -20,7 +21,6 @@ import { SyncCard } from './components/SyncCard';
 |--------------------------------------------------------------------------
 */
 
-const backendHost = process.env.BACKEND_HOST || "https://fluid-ts522vy4bq-od.a.run.app";
 const axiosInstance = axios.create({
   baseURL: backendHost,
   withCredentials: true,

@@ -4,12 +4,12 @@
 | Author : Alexandre Schaffner (alexandre.s@starton.com)
 */
 
-import axios from "axios";
-import { type Component, Show, splitProps } from "solid-js";
+import axios from 'axios';
+import { type Component, Show, splitProps } from 'solid-js';
 
-import { Typography } from "../Typography/Typography";
+import { backendHost } from '../../constants.json';
+import { Typography } from '../Typography/Typography';
 
-const backendHost = process.env.BACKEND_HOST || "https://fluid-ts522vy4bq-od.a.run.app";
 const axiosInstance = axios.create({
   baseURL: backendHost,
   withCredentials: true,
