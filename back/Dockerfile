@@ -10,6 +10,6 @@ RUN yarn build
 
 RUN yarn prisma generate
 
-EXPOSE 8000
+EXPOSE ${PORT}
 
 CMD [ "yarn", "start:prod" ]

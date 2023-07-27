@@ -8,6 +8,11 @@ import { FastifyRequest } from 'fastify';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  @Get('/health')
+  async getHealth() {
+    return { status: 'ok' };
+  }
+
   @UseGuards(VerifyJwtGuard)
   @Get('/me')
   async getMe(@Req() req: FastifyRequest): Promise<MeDto> {

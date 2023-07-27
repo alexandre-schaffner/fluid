@@ -17,12 +17,12 @@ async function bootstrap() {
 
   await app.register(fastifyCookie, {});
   await app.register(cors, {
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000', 'https://fluid-plum.vercel.app/'],
     credentials: true,
   });
 
   app.useGlobalPipes(new ValidationPipe());
 
-  await app.listen(8000);
+  await app.listen(process.env.PORT || 8000, '0.0.0.0');
 }
 bootstrap();
