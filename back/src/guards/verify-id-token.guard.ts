@@ -17,9 +17,15 @@ export class verifyIdTokenGuard implements CanActivate {
       const { body } = request;
       const cookieCSRFToken = request.cookies['g_csrf_token'];
 
-      if (!cookieCSRFToken) return false;
+      if (!cookieCSRFToken) {
+        console.error('No CSRF token in cookie');
+        return false;
+      }
 
-      if (cookieCSRFToken !== body.g_csrf_token) return false;
+      if (cookieCSRFToken !== body.g_csrf_token) {
+        console.error('CSRF token mismatch');
+        return false;
+      }
 
       const ticket: LoginTicket = await googleAuthClient.verifyIdToken({
         idToken: body.credential,
