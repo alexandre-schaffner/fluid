@@ -4,13 +4,14 @@
 | Author : Alexandre Schaffner (alexandre.s@starton.com)
 */
 
-import axios, { type AxiosInstance } from "axios";
+import axios from "axios";
 import { type Component, Show, splitProps } from "solid-js";
 
 import { Typography } from "../Typography/Typography";
 
-const axiosInstance: AxiosInstance = axios.create({
-  baseURL: "http://localhost:8000",
+const backendHost = process.env.BACKEND_HOST || "https://fluid-ts522vy4bq-od.a.run.app";
+const axiosInstance = axios.create({
+  baseURL: backendHost,
   withCredentials: true,
 });
 
@@ -20,7 +21,9 @@ const axiosInstance: AxiosInstance = axios.create({
 |--------------------------------------------------------------------------
 */
 
-export const Playlist: Component<{
+// Props
+// --------------------------------------------------------------------------
+interface PlaylistProps {
   name: string;
   image?: string;
   length: number;
@@ -28,7 +31,11 @@ export const Playlist: Component<{
   isSyncedPlaylist: boolean;
   isSyncing: boolean;
   toggleSync: (playlistId: string) => void;
-}> = (props) => {
+};
+
+// Component
+// --------------------------------------------------------------------------
+export const Playlist: Component<PlaylistProps> = (props) => {
   const [local, others] = splitProps(props, [
     "name",
     "image",

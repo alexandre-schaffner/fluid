@@ -20,7 +20,7 @@ import { SyncCard } from './components/SyncCard';
 |--------------------------------------------------------------------------
 */
 
-const backendHost = "http://localhost:8000";
+const backendHost = process.env.BACKEND_HOST || "https://fluid-ts522vy4bq-od.a.run.app";
 const axiosInstance = axios.create({
   baseURL: backendHost,
   withCredentials: true,
