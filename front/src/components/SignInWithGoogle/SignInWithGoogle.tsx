@@ -23,7 +23,7 @@ export const SignInWithGoogle = ():JSXElement => {
         data-context="use"
         data-ux_mode="popup"
         data-login_uri={`${backendHost}/auth/webhook/google-sign-in`}
-        data-state_cookie_domain="https://fluidsync.app"
+        data-state_cookie_domain="fluidsync.app"
         data-itp_support="true"
       />
 
