@@ -30,9 +30,7 @@ export class SpotifyService {
     try {
       let response = await axios.post(
         'https://accounts.spotify.com/api/token',
-        'grant_type=authorization_code&code=' +
-          code +
-          '&redirect_uri=http://localhost:8000/spotify/webhook/authorize',
+        `grant_type=authorization_code&code=${code}&redirect_uri=${process.env.BACKEND_HOST}/spotify/webhook/authorize`,
         {
           headers: {
             Authorization: 'Basic ' + this.encodedCredentials,
