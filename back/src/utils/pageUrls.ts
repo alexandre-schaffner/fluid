@@ -19,7 +19,7 @@ class PagesUrls {
     }
     this.authorizeStreamingPlatformPage =
       this.frontHost + '/authorize/streaming-platform';
-    this.homePage = this.frontHost + '/fluids/app';
+    this.homePage = this.frontHost + '/app';
     this.selectPlaylistPage = this.frontHost + '/playlist';
     this.authorizeYouTubePage = this.frontHost + '/authorize/youtube';
   }
