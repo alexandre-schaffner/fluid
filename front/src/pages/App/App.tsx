@@ -70,15 +70,14 @@ const App: Component = () => {
       <div class="mb-6 basis-full">
         <Typography variation="title">Welcome, {me.name}</Typography>
       </div>
-
-      {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-      <SyncCard isSyncing={me.isSync} toggleSync={toggleSyncStatus} />
-
+      
       <PlaylistCard
         playlists={me.playlists ?? []}
         isSyncing={me.isSync ?? false}
         setSync={toggleSyncPlaylist}
       />
+
+      <SyncCard isSyncing={me.isSync} toggleSync={toggleSyncStatus} />
     </div>
   );
 };
