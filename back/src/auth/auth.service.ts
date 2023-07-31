@@ -1,7 +1,7 @@
 /*
-| Developed by Starton
+| Developed by Fluid
 | Filename : auth.service.ts
-| Author : Alexandre Schaffner (alexandre.s@starton.com)
+| Author : Alexandre Schaffner (alexandre.schaffner@icloud.com)
 */
 
 import { Injectable } from '@nestjs/common';

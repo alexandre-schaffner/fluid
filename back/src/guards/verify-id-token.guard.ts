@@ -1,7 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { LoginTicket, TokenPayload } from 'google-auth-library';
 import { OAuth2Client } from 'google-auth-library';
-import constants from '../../constants.json';
 
 @Injectable()
 export class verifyIdTokenGuard implements CanActivate {
@@ -14,22 +13,11 @@ export class verifyIdTokenGuard implements CanActivate {
       );
 
       const request = context.switchToHttp().getRequest();
-      const { body, cookies } = request;
-      const cookieCSRFToken = cookies['g_csrf_token'];
-
-      if (!cookieCSRFToken) {
-        console.error('No CSRF token in cookie');
-        return false;
-      }
-
-      if (cookieCSRFToken !== body.g_csrf_token) {
-        console.error('CSRF token mismatch');
-        return false;
-      }
+      const { body } = request;
 
       const ticket: LoginTicket = await googleAuthClient.verifyIdToken({
         idToken: body.credential,
-        audience: constants.googleClientId,
+        audience: process.env.GOOGLE_CLIENT_ID,
       });
 
       const payload: TokenPayload | undefined = ticket.getPayload();

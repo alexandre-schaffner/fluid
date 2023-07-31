@@ -1,7 +1,7 @@
 /*
-| Developed by Starton
+| Developed by Fluid
 | Filename : CardHeader.tsx
-| Author : Alexandre Schaffner (alexandre.s@starton.com)
+| Author : Alexandre Schaffner (alexandre.schaffner@icloud.com)
 */
 
 import { type Component } from 'solid-js';

@@ -1,7 +1,7 @@
 /*
-| Developed by Starton
+| Developed by Fluid
 | Filename : PlaylistCard.tsx
-| Author : Alexandre Schaffner (alexandre.s@starton.com)
+| Author : Alexandre Schaffner (alexandre.schaffner@icloud.com)
 */
 
 import { type Component, For, splitProps } from 'solid-js';
@@ -9,7 +9,7 @@ import { type Component, For, splitProps } from 'solid-js';
 import { Button } from '../../../components/Button/Button';
 import { CardHeader } from '../../../components/Card/CardHeader';
 import { Divider } from '../../../components/Divider/Divider';
-import { type PlaylistMetadata } from '../../../contracts/PlaylistMetadata';
+import { type PlaylistMetadata } from '../../../contracts/PlaylistMetadata.interface';
 import { Playlist } from '../../../components/Playlist/Playlist';
 
 /*

@@ -1,7 +1,7 @@
 /*
-| Developed by Starton
+| Developed by Fluid
 | Filename : setPlaylist.dto.ts
-| Author : Alexandre Schaffner (alexandre.s@starton.com)
+| Author : Alexandre Schaffner (alexandre.schaffner@icloud.com)
 */
 
 import { IsString, IsNotEmpty } from 'class-validator';

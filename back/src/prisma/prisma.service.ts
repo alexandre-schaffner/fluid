@@ -1,7 +1,7 @@
 /*
-| Developed by Starton
+| Developed by Fluid
 | Filename : prisma.service.ts
-| Author : Alexandre Schaffner (alexandre.s@starton.com)
+| Author : Alexandre Schaffner (alexandre.schaffner@icloud.com)
 */
 
 import { INestApplication, Injectable, OnModuleInit } from '@nestjs/common';

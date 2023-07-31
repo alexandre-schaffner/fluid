@@ -1,7 +1,7 @@
 /*
-| Developed by Starton
+| Developed by Fluid
 | Filename : LandingPage.tsx
-| Author : Alexandre Schaffner (alexandre.s@starton.com)
+| Author : Alexandre Schaffner (alexandre.schaffner@icloud.com)
 */
 
 import { type Component, createEffect, createSignal } from 'solid-js';
@@ -42,10 +42,6 @@ export const Landing: Component = () => {
       </div>
 
       <div class={"fixed flex flex-col h-full justify-center w-full max-w-sm text-center gap-6 items-center"}>
-        {/* <Typography>
-          Fluid automatically saves your YouTube music discoveries to a
-          Spotify playlist of your choice.
-        </Typography> */}
         <SignInWithGoogle />
       </div>
     </div>

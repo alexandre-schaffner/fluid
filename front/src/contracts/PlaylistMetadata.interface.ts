@@ -1,4 +1,4 @@
-import { type TrackMetadata } from "./TrackMetadata";
+import { type TrackMetadata } from "./TrackMetadata.interface";
 
 export interface PlaylistMetadata {
   id: string;

@@ -1,15 +1,11 @@
 /*
-| Developed by Starton
+| Developed by Fluid
 | Filename : auth.controller.ts
-| Author : Alexandre Schaffner (alexandre.s@starton.com)
+| Author : Alexandre Schaffner (alexandre.schaffner@icloud.com)
 */
 
 import { Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
-import {
-  authorizeStreamingPlatformPage,
-  authorizeYouTubePage,
-  homePage,
-} from 'constants.json';
+import { pagesUrls } from '../utils/pageUrls';
 import { createHmac } from 'crypto';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -29,7 +25,7 @@ export class AuthController {
   // Webhook for Google Sign In
   //--------------------------------------------------------------------------
   @UseGuards(verifyIdTokenGuard)
-  @Post('webhook/google-sign-in')
+  @Post('google-sign-in')
   async googleSignIn(@Req() req: FastifyRequest, @Res() res: FastifyReply) {
     // Setting up a hash for the state parmeter
     //--------------------------------------------------------------------------
@@ -79,14 +75,16 @@ export class AuthController {
 
     // Redirect the user to the appropriate page
     //--------------------------------------------------------------------------
+    let redirectUrl = pagesUrls.generateAuthorizeYouTubePageUrl(
+      user.name,
+      signedJwtHash,
+    );
+
     if (youtubeRefreshToken && !streamingPlatformRefreshToken)
-      return res.status(302).redirect(authorizeStreamingPlatformPage);
+      redirectUrl = pagesUrls.authorizeStreamingPlatformPage;
     else if (youtubeRefreshToken && streamingPlatformRefreshToken)
-      return res.status(302).redirect(homePage);
-    return res
-      .status(302)
-      .redirect(
-        authorizeYouTubePage + '?user=' + user.name + '&state=' + signedJwtHash,
-      );
+      redirectUrl = pagesUrls.homePage;
+
+    return res.send({ redirectUrl });
   }
 }

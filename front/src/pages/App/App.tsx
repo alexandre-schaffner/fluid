@@ -1,7 +1,7 @@
 /*
-| Developed by Starton
+| Developed by Fluid
 | Filename : App.tsx
-| Author : Alexandre Schaffner (alexandre.s@starton.com)
+| Author : Alexandre Schaffner (alexandre.schaffner@icloud.com)
 */
 
 import axios from 'axios';
@@ -10,7 +10,7 @@ import { createStore } from 'solid-js/store';
 
 import { Typography } from '../../components/Typography/Typography';
 import { backendHost } from '../../constants.json';
-import { type Me } from '../../contracts/Me';
+import { type Me } from '../../contracts/Me.interface';
 import { Header } from './components/Header';
 import { PlaylistCard } from './components/PlaylistCard';
 import { SyncCard } from './components/SyncCard';

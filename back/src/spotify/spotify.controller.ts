@@ -1,7 +1,7 @@
 /*
-| Developed by Starton
+| Developed by Fluid
 | Filename : spotify.controller.ts
-| Author : Alexandre Schaffner (alexandre.s@starton.com)
+| Author : Alexandre Schaffner (alexandre.schaffner@icloud.com)
 */
 
 import {
@@ -13,12 +13,12 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { homePage } from 'constants.json';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { VerifyJwtGuard } from 'src/guards/verify-jwt.guard';
 
-import { SpotifyService } from './spotify.service';
+import { pagesUrls } from '../utils/pageUrls';
 import { SetPlaylistDto } from './dto/setPlaylist.dto';
+import { SpotifyService } from './spotify.service';
 
 /*
 |--------------------------------------------------------------------------
@@ -44,7 +44,7 @@ export class SpotifyController {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     await this.spotifyService.exchangeCodeForTokens(code, req.user!.sub!);
 
-    return res.status(302).redirect(homePage);
+    return res.status(302).redirect(pagesUrls.homePage);
   }
 
   // Set the playlist to sync

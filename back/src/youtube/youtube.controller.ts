@@ -1,7 +1,7 @@
 /*
-| Developed by Starton
+| Developed by Fluid
 | Filename : youtube.controller.ts
-| Author : Alexandre Schaffner (alexandre.s@starton.com)
+| Author : Alexandre Schaffner (alexandre.schaffner@icloud.com)
 */
 
 import {
@@ -13,14 +13,11 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import {
-  authorizeStreamingPlatformPage,
-  selectPlaylistPage,
-} from 'constants.json';
 import { createHmac } from 'crypto';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { VerifyJwtGuard } from 'src/guards/verify-jwt.guard';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { pagesUrls } from 'src/utils/pageUrls';
 
 import { YoutubeService } from './youtube.service';
 
@@ -54,6 +51,7 @@ export class YoutubeController {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const jwtHash = hash.update(req.cookies['jwt']!).digest('hex');
 
+    console.log('jwt cookie', req.cookies['jwt'], 'hash', jwtHash);
     if (jwtHash !== state) throw new BadRequestException();
     //--------------------------------------------------------------------------
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -69,7 +67,7 @@ export class YoutubeController {
     )?.refreshToken;
 
     if (!streamingPlatformRefreshToken)
-      res.status(302).redirect(authorizeStreamingPlatformPage);
-    else res.status(302).redirect(selectPlaylistPage);
+      res.status(302).redirect(pagesUrls.authorizeStreamingPlatformPage);
+    else res.status(302).redirect(pagesUrls.selectPlaylistPage);
   }
 }

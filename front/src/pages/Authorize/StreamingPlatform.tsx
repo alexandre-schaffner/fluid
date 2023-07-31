@@ -1,14 +1,14 @@
 /*
-| Developed by Starton
+| Developed by Fluid
 | Filename : StreamingPlatform.tsx
-| Author : Alexandre Schaffner (alexandre.s@starton.com)
+| Author : Alexandre Schaffner (alexandre.schaffner@icloud.com)
 */
 
 import { type JSXElement } from 'solid-js';
 
 import { Button } from '../../components/Button/Button';
 import { Typography } from '../../components/Typography/Typography';
-import { backendHost } from '../../constants.json';
+import { backendHost } from '../../constants';
 
 const spotifyClientId = "6b99eeab69c44b28aa9187b60312acef";
 const spotifyScopes =

@@ -17,12 +17,18 @@ async function bootstrap() {
 
   await app.register(fastifyCookie, {});
   await app.register(cors, {
-    origin: ['http://localhost:3000', 'https://www.fluidsync.app'],
+    origin:
+      process.env.NODE_ENV === 'production'
+        ? ['https://www.fluidsync.app']
+        : ['http://localhost:3000'],
     credentials: true,
   });
 
   app.useGlobalPipes(new ValidationPipe());
 
-  await app.listen(process.env.PORT || 8000, '0.0.0.0');
+  await app.listen(
+    process.env.PORT || 8000,
+    process.env.NODE_ENV === 'production' ? '0.0.0.0' : '127.0.0.1',
+  );
 }
 bootstrap();

@@ -1,13 +1,13 @@
 /*
-| Developed by Starton
+| Developed by Fluid
 | Filename : Playlist.tsx
-| Author : Alexandre Schaffner (alexandre.s@starton.com)
+| Author : Alexandre Schaffner (alexandre.schaffner@icloud.com)
 */
 
 import axios from 'axios';
 import { type Component, Show, splitProps } from 'solid-js';
 
-import { backendHost } from '../../constants.json';
+import { backendHost } from '../../constants';
 import { Typography } from '../Typography/Typography';
 
 const axiosInstance = axios.create({
