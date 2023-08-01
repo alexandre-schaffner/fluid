@@ -66,7 +66,7 @@ const App: Component = () => {
   };
 
   return (
-    <div class="flex h-screen max-h-screen w-screen flex-wrap content-start items-start gap-4 bg-slate-950 bg-cccircularRight2 bg-cover bg-center pl-8 pt-2">
+    <div class="flex min-h-screen w-screen flex-wrap content-start items-start gap-4 bg-slate-950 bg-cccircularRight2 bg-cover bg-center pl-8 pt-2">
       <Header />
       <div class="mb-6 basis-full">
         <Typography variation="title">Welcome, {me.name}</Typography>
