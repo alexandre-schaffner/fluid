@@ -79,23 +79,4 @@ export class StreamingPlatformService {
       return null;
     }
   }
-
-  // Set the sync status
-  //--------------------------------------------------------------------------
-  async setSync(userId: string, sync: boolean) {
-    await this.prismaService.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        sync,
-      },
-    });
-
-    if (!sync) {
-      return this.syncService.disableSync(userId);
-    }
-
-    this.syncService.enableSync(userId);
-  }
 }

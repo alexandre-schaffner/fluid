@@ -1,17 +1,21 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Post,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+/*
+| Developed by Fluid
+| Filename : platform.controller.ts
+| Author : Alexandre Schaffner (alexandre.schaffner@icloud.com)
+*/
+
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 import { VerifyJwtGuard } from 'src/guards/verify-jwt.guard';
 import { SetPlaylistDto } from 'src/spotify/dto/setPlaylist.dto';
 
 import { StreamingPlatformService } from './platform.service';
+
+/*
+|--------------------------------------------------------------------------
+| Controller responsible for calling streaming platform services
+|--------------------------------------------------------------------------
+*/
 
 @Controller('platform')
 export class StreamingPlatformController {
@@ -19,6 +23,8 @@ export class StreamingPlatformController {
     private readonly streamingPlatformService: StreamingPlatformService,
   ) {}
 
+  // Get all playlists of the user on the streaming platform
+  //--------------------------------------------------------------------------
   @UseGuards(VerifyJwtGuard)
   @Get('playlists')
   async getPlaylists(@Req() req: FastifyRequest) {
@@ -29,6 +35,8 @@ export class StreamingPlatformController {
     return { playlists };
   }
 
+  // Set the playlist of the user to sync
+  //--------------------------------------------------------------------------
   @UseGuards(VerifyJwtGuard)
   @Post('playlist/set')
   async setPlaylist(@Req() req: FastifyRequest, @Body() body: SetPlaylistDto) {
@@ -39,36 +47,5 @@ export class StreamingPlatformController {
       playlistId,
     );
     return { message: 'Playlist set' };
-  }
-
-  /*
-  |--------------------------------------------------------------------------
-  | SOON DEPRECATED
-  |--------------------------------------------------------------------------
-  */
-
-  @UseGuards(VerifyJwtGuard)
-  @Post('sync')
-  async syncPlaylist(@Req() req: FastifyRequest) {
-    await this.streamingPlatformService.setSync(
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      req.user!.sub,
-      true,
-    );
-  }
-
-  /*
-  |--------------------------------------------------------------------------
-  | SOON DEPRECATED
-  |--------------------------------------------------------------------------
-  */
-  @UseGuards(VerifyJwtGuard)
-  @Delete('sync')
-  async unsyncPlaylist(@Req() req: FastifyRequest) {
-    await this.streamingPlatformService.setSync(
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      req.user!.sub,
-      false,
-    );
   }
 }
