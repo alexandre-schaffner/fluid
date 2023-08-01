@@ -95,9 +95,13 @@ export class SyncService {
         for (const item of search.data.tracks.items) {
           let score = 0;
 
-          if (item.artists.map((artist: any) => artist.name).includes(artist))
+          if (
+            item.artists
+              .map((artist: any) => artist.name.toLowerCase())
+              .includes(artist.toLowerCase())
+          )
             score++;
-          if (item.name === title) score++;
+          if (item.name.toLowerCase() === title.toLowerCase) score++;
 
           if (score > bestMatchScore) {
             bestMatch = item.id;
