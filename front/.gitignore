@@ -1,5 +1,4 @@
 node_modules
-constants.json
 dist
 *secret*
 
