@@ -6,9 +6,9 @@
 
 import { type Component, For, splitProps } from 'solid-js';
 
-import { Button } from '../../../components/Button/Button';
+// import { Button } from '../../../components/Button/Button';
 import { CardHeader } from '../../../components/Card/CardHeader';
-import { Divider } from '../../../components/Divider/Divider';
+// import { Divider } from '../../../components/Divider/Divider';
 import { type PlaylistMetadata } from '../../../contracts/PlaylistMetadata.interface';
 import { Playlist } from '../../../components/Playlist/Playlist';
 
@@ -49,7 +49,7 @@ export const PlaylistCard: Component<PlaylistCardProps> = (props) => {
         )}
       </For>
       </div>
-      <Divider />
+      {/* <Divider />
 
       <div class="mt-2 flex w-64 flex-col self-end">
         <Button
@@ -59,7 +59,7 @@ export const PlaylistCard: Component<PlaylistCardProps> = (props) => {
             console.log('Pop the "Create a new playlist" modal');
           }}
         />
-      </div>
+      </div> */}
     </div>
   );
 };

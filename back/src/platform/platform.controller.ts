@@ -1,10 +1,17 @@
-import { Body, Controller, Delete, Get, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import { FastifyRequest } from 'fastify';
 import { VerifyJwtGuard } from 'src/guards/verify-jwt.guard';
+import { SetPlaylistDto } from 'src/spotify/dto/setPlaylist.dto';
 
 import { StreamingPlatformService } from './platform.service';
-import { FastifyRequest } from 'fastify';
-import { Post, Req } from '@nestjs/common';
-import { SetPlaylistDto } from 'src/spotify/dto/setPlaylist.dto';
 
 @Controller('platform')
 export class StreamingPlatformController {
@@ -34,6 +41,12 @@ export class StreamingPlatformController {
     return { message: 'Playlist set' };
   }
 
+  /*
+  |--------------------------------------------------------------------------
+  | SOON DEPRECATED
+  |--------------------------------------------------------------------------
+  */
+
   @UseGuards(VerifyJwtGuard)
   @Post('sync')
   async syncPlaylist(@Req() req: FastifyRequest) {
@@ -44,6 +57,11 @@ export class StreamingPlatformController {
     );
   }
 
+  /*
+  |--------------------------------------------------------------------------
+  | SOON DEPRECATED
+  |--------------------------------------------------------------------------
+  */
   @UseGuards(VerifyJwtGuard)
   @Delete('sync')
   async unsyncPlaylist(@Req() req: FastifyRequest) {

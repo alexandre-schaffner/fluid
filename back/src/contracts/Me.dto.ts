@@ -5,4 +5,5 @@ export interface MeDto {
   name: string;
   playlists: PlaylistMetadata[];
   isSync: boolean;
+  syncPlaylistId: string | null;
 }

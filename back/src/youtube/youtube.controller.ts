@@ -51,7 +51,6 @@ export class YoutubeController {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const jwtHash = hash.update(req.cookies['jwt']!).digest('hex');
 
-    console.log('jwt cookie', req.cookies['jwt'], 'hash', jwtHash);
     if (jwtHash !== state) throw new BadRequestException();
     //--------------------------------------------------------------------------
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

@@ -33,6 +33,7 @@ export class AppService {
       name: user.name,
       isSync: user.sync,
       playlists: playlists,
+      syncPlaylistId: user.Platform.playlistUniqueRef,
     };
 
     for (const playlist of me.playlists) {

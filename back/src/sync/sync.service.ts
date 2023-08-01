@@ -35,7 +35,7 @@ export class SyncService {
 
   // Sync every 3 minutes
   //--------------------------------------------------------------------------
-  @Interval('sync', 1000 * 30)
+  @Interval('sync', 1000 * 60 * 3)
   async sync() {
     // Iterate over the syncMap (one loop = one user)
     //--------------------------------------------------------------------------

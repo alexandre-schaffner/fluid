@@ -27,12 +27,12 @@ const axiosInstance = axios.create({
 });
 
 const App: Component = () => {
-  // const [me, setMe] = createSignal<Me | null>(null, { equals: false });
   const [me, setMe] = createStore<Me>({
     id: "",
     name: "",
     isSync: false,
     playlists: [],
+    syncPlaylistId: null
   });
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -50,17 +50,18 @@ const App: Component = () => {
     setMe({
       ...me,
       playlists: me.playlists.map((playlist) => {
-        if (playlist.id === playlistId || playlist.isSync)
+        if ((playlist.id === playlistId || playlist.isSync) && playlistId !== me.syncPlaylistId)
           return { ...playlist, isSync: !playlist.isSync };
         return playlist;
       }),
+      syncPlaylistId: playlistId,
     });
   };
 
   const toggleSyncStatus = async (): Promise<void> => {
     if (me.isSync ?? false)
-      await axiosInstance.delete("platform/sync", {});
-    else await axiosInstance.post("/platform/sync", {});
+      await axiosInstance.post("sync/status", {sync: true});
+    else await axiosInstance.post("sync/status", {sync: false});
     setMe({ ...me, isSync: !me.isSync });
   };
 
@@ -70,14 +71,14 @@ const App: Component = () => {
       <div class="mb-6 basis-full">
         <Typography variation="title">Welcome, {me.name}</Typography>
       </div>
-      
+
       <PlaylistCard
         playlists={me.playlists ?? []}
         isSyncing={me.isSync ?? false}
         setSync={toggleSyncPlaylist}
       />
 
-      <SyncCard isSyncing={me.isSync} toggleSync={toggleSyncStatus} />
+      <SyncCard isSyncing={me.isSync} syncPlaylistId={me.syncPlaylistId} toggleSync={toggleSyncStatus} />
     </div>
   );
 };
