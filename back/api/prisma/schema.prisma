@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime  @default(now())
+  email     String    @unique
+  name      String
+  sync      Boolean   @default(false)
+  Platform  Platform?
+  Youtube   Youtube?
+}
+
+model Platform {
+  id                String            @id @default(auto()) @map("_id") @db.ObjectId
+  type              StreamingPlatform
+  refreshToken      String
+  userUniqueRef     String            @unique
+  playlistUniqueRef String?
+  user              User              @relation(fields: [userId], references: [id])
+  userId            String            @unique @db.ObjectId
+}
+
+model Youtube {
+  id              String  @id @default(auto()) @map("_id") @db.ObjectId
+  refreshToken    String
+  user            User    @relation(fields: [userId], references: [id])
+  userId          String  @unique @db.ObjectId
+  lastLikedVideos Video[]
+  likedVideoEtag  String?
+}
+
+type Video {
+  title        String
+  categoryId   String
+  id           String
+  channelTitle String
+}
+
+model RevokedToken {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  jti       String   @unique
+}
+
+enum StreamingPlatform {
+  SPOTIFY
+  DEEZER
+}
