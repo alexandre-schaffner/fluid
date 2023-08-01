@@ -59,9 +59,9 @@ const App: Component = () => {
   };
 
   const toggleSyncStatus = async (): Promise<void> => {
-    if (me.isSync ?? false)
-      await axiosInstance.post("sync/status", {sync: true});
-    else await axiosInstance.post("sync/status", {sync: false});
+    if (me.isSync)
+      await axiosInstance.post("sync/status", {sync: false});
+    else await axiosInstance.post("sync/status", {sync: true});
     setMe({ ...me, isSync: !me.isSync });
   };
 
