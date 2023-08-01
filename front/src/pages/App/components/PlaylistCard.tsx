@@ -34,7 +34,7 @@ export const PlaylistCard: Component<PlaylistCardProps> = (props) => {
         description="Fluid automatically saves music you like on YouTube to this playlist."
       />
 
-      <div class="flex max-h-96 flex-col overflow-y-scroll no-scrollbar">
+      <div class="flex max-h-96 flex-col gap-y-1 overflow-y-scroll no-scrollbar">
       <For each={local.playlists}>
         {(playlist) => (
           <Playlist

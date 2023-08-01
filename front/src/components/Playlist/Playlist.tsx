@@ -7,7 +7,7 @@
 import axios from 'axios';
 import { type Component, Show, splitProps } from 'solid-js';
 
-import { backendHost } from '../../constants';
+import { backendHost } from '../../constants.json';
 import { Typography } from '../Typography/Typography';
 
 const axiosInstance = axios.create({
@@ -82,8 +82,17 @@ export const Playlist: Component<PlaylistProps> = (props) => {
   return (
     <div
       class={
-        "flex w-full gap-4 rounded-md from-blue-800 to-blue-500 p-2 hover:cursor-pointer hover:bg-gradient-to-r"
+        "flex w-full visible gap-4 rounded-md p-2 hover:cursor-pointer hover:bg-gradient-to-r"
       }
+      classList={{
+        "bg-slate-800": local.isSyncedPlaylist,
+        "border-2": local.isSyncedPlaylist,
+        "border-green-500": local.isSyncedPlaylist && local.isSyncing,
+        "border-orange-500": local.isSyncedPlaylist && !local.isSyncing,
+        "from-blue-800 to-blue-500": !local.isSyncedPlaylist,
+        "from-green-900 to-green-600": local.isSyncedPlaylist,
+        "from-orange-900 to-orange-600": local.isSyncedPlaylist && !local.isSyncing,
+      }}
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onClick={async () => {
         await setPlaylist(local.id);
