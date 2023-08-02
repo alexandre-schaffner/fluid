@@ -4,16 +4,17 @@
 | Author : Alexandre Schaffner (alexandre.schaffner@icloud.com)
 */
 
-import axios from 'axios';
-import { type Component, onMount } from 'solid-js';
-import { createStore } from 'solid-js/store';
+import axios from "axios";
+import { type Component, createSignal, onMount, Show } from "solid-js";
+import { createStore } from "solid-js/store";
 
-import { Typography } from '../../components/Typography/Typography';
-import { backendHost } from '../../constants.json';
-import { type Me } from '../../contracts/Me.interface';
-import { Header } from './components/Header';
-import { PlaylistCard } from './components/PlaylistCard';
-import { SyncCard } from './components/SyncCard';
+import { Divider } from "../../components/Divider/Divider";
+import { Typography } from "../../components/Typography/Typography";
+import { backendHost } from "../../constants.json";
+import { type Me } from "../../contracts/Me.interface";
+import { Header } from "./components/Header";
+import { PlaylistCard } from "./components/PlaylistCard";
+import { SyncCard } from "./components/SyncCard";
 
 /*
 |--------------------------------------------------------------------------
@@ -27,13 +28,16 @@ const axiosInstance = axios.create({
 });
 
 const App: Component = () => {
+  const [innerWidth, setInnerWidth] = createSignal<number>(window.innerWidth);
   const [me, setMe] = createStore<Me>({
     id: "",
     name: "",
     isSync: false,
     playlists: [],
-    syncPlaylistId: null
+    syncPlaylistId: null,
   });
+
+  window.addEventListener("resize", () => setInnerWidth(window.innerWidth));
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   onMount(async () => {
@@ -47,30 +51,54 @@ const App: Component = () => {
   });
 
   const toggleSyncPlaylist = (playlistId: string): void => {
+    const updatedPlaylists = me.playlists.map((playlist) => {
+      if (
+        (playlist.id === playlistId || playlist.isSync) &&
+        playlistId !== me.syncPlaylistId
+      )
+        return { ...playlist, isSync: !playlist.isSync };
+      return playlist;
+    });
+
+    for (let i = 0; i < updatedPlaylists.length; i++) {
+      if (updatedPlaylists[i].isSync) {
+        updatedPlaylists.unshift(updatedPlaylists[i]);
+        updatedPlaylists.splice(i + 1, 1);
+        break;
+      }
+    }
+
     setMe({
       ...me,
-      playlists: me.playlists.map((playlist) => {
-        if ((playlist.id === playlistId || playlist.isSync) && playlistId !== me.syncPlaylistId)
-          return { ...playlist, isSync: !playlist.isSync };
-        return playlist;
-      }),
+      playlists: updatedPlaylists,
       syncPlaylistId: playlistId,
     });
   };
 
   const toggleSyncStatus = async (): Promise<void> => {
-    if (me.isSync)
-      await axiosInstance.post("sync/status", {sync: false});
-    else await axiosInstance.post("sync/status", {sync: true});
+    if (me.isSync) await axiosInstance.post("sync/status", { sync: false });
+    else await axiosInstance.post("sync/status", { sync: true });
     setMe({ ...me, isSync: !me.isSync });
   };
 
   return (
-    <div class="flex min-h-screen w-screen flex-wrap content-start items-start gap-4 bg-slate-950 bg-cccircularRight2 bg-cover bg-center pl-8 pt-2">
-      <Header />
-      <div class="mb-6 basis-full">
-        <Typography variation="title">Welcome, {me.name}</Typography>
-      </div>
+    <div class="flex min-h-screen w-screen flex-wrap content-start items-start gap-4 bg-slate-950 bg-cover pb-2 pl-4 pr-4 pt-2 md:bg-cccircularRight2 md:bg-center md:pl-8 md:pr-8">
+      <Show
+        when={innerWidth() > 768}
+        fallback={
+          <div class="mb-4 flex basis-full flex-col gap-y-2">
+            <Typography variation="title">Fluid</Typography>
+            <Divider />
+          </div>
+        }
+      >
+        <>
+          <Header />
+          <div class="mb-6 basis-full">
+            <Typography variation="title">Welcome, {me.name}</Typography>
+          </div>
+        </>
+      </Show>
 
       <PlaylistCard
         playlists={me.playlists ?? []}
@@ -78,7 +106,11 @@ const App: Component = () => {
         setSync={toggleSyncPlaylist}
       />
 
-      <SyncCard isSyncing={me.isSync} syncPlaylistId={me.syncPlaylistId} toggleSync={toggleSyncStatus} />
+      <SyncCard
+        isSyncing={me.isSync}
+        syncPlaylistId={me.syncPlaylistId}
+        toggleSync={toggleSyncStatus}
+      />
     </div>
   );
 };

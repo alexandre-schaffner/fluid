@@ -26,7 +26,7 @@ interface ButtonProps {
 // Component
 // --------------------------------------------------------------------------
 export const Button: ParentComponent<ButtonProps> = (props) => {
-  const [local, others] = splitProps(props, [
+  const [local] = splitProps(props, [
     "label",
     "style",
     "isDisabled",
@@ -46,9 +46,7 @@ export const Button: ParentComponent<ButtonProps> = (props) => {
         "bg-slate-800": local.style === "outline" || local.isDisabled,
         "hover:bg-slate-700": local.style === "outline" && local.isDisabled !== true,
 
-        "bg-blue-600": local.style === "solid" && local.isDisabled !== true,
-        "hover:bg-blue-500":
-          local.style === "solid" && local.isDisabled !== true,
+        "bg-blue-600 hover:bg-blue-500": local.style === "solid" && local.isDisabled !== true,
 
         "cursor-default": local.isDisabled,
       }}

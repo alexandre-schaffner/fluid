@@ -85,20 +85,17 @@ export const Playlist: Component<PlaylistProps> = (props) => {
         "flex w-full visible gap-4 rounded-md p-2 hover:cursor-pointer hover:bg-gradient-to-r"
       }
       classList={{
-        "bg-slate-800": local.isSyncedPlaylist,
-        "border-2": local.isSyncedPlaylist,
-        "border-green-500": local.isSyncedPlaylist && local.isSyncing,
-        "border-orange-500": local.isSyncedPlaylist && !local.isSyncing,
+        "bg-slate-800 border-2 from-green-900 to-green-600 mb-4": local.isSyncedPlaylist,
         "from-blue-800 to-blue-500": !local.isSyncedPlaylist,
-        "from-green-900 to-green-600": local.isSyncedPlaylist,
-        "from-orange-900 to-orange-600": local.isSyncedPlaylist && !local.isSyncing,
+        "border-green-500": local.isSyncedPlaylist && local.isSyncing,
+        "border-orange-500 from-orange-900 to-orange-600": local.isSyncedPlaylist && !local.isSyncing,
       }}
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onClick={async () => {
         await setPlaylist(local.id);
       }}
     >
-      <img src={local.image ?? ""} class="w-16 rounded-sm" />
+      <img src={local.image ?? "src/assets/default-playlist.png"}  class="w-16 max- rounded-sm h-16 object-cover" />
 
       <div class="w-1/2 flex-col">
         <Typography>{local.name}</Typography>
