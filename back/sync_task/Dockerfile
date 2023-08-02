@@ -10,4 +10,4 @@ RUN yarn build
 
 RUN yarn prisma generate
 
-CMD [ "yarn", "start:prod" ]
+CMD [ "yarn", "start" ]
