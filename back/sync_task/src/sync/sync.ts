@@ -109,7 +109,7 @@ export async function sync(
     }
   }
 
-  prisma.youtube.update({
+  await prisma.youtube.update({
     where: {
       userId: user.id,
     },
