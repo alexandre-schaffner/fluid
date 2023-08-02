@@ -5,25 +5,20 @@
 */
 
 import axios from "axios";
-import querystring from "querystring";
 
-// Search for the track on Spotify
-//--------------------------------------------------------------------------
+/*
+|--------------------------------------------------------------------------
+| Search for a track on Spotify
+|--------------------------------------------------------------------------
+*/
 
 export async function searchTrack(
   artist: string,
   title: string,
   accessToken: string
 ) {
-  const queryStringified = querystring.stringify({
-    q: `artist:${artist} track:${title}`,
-    // q: `${artist} ${title}`,
-    type: "track",
-    limit: 5,
-  });
-
   return await axios.get(
-    `https://api.spotify.com/v1/search?${queryStringified}`,
+    `https://api.spotify.com/v1/search?q=artist:${artist} track:${title}&type=track&limit=5`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
