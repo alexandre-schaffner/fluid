@@ -5,7 +5,7 @@
 */
 
 import { useSearchParams } from "@solidjs/router";
-import { type Component, createSignal } from "solid-js";
+import { type Component } from "solid-js";
 
 import { Button } from "../../components/Button/Button";
 import { Typography } from "../../components/Typography/Typography";
@@ -18,11 +18,7 @@ import { backendHost } from "../../constants.json";
 */
 
 export const AuthorizeYouTube: Component = () => {
-  // const menuItems = [{ name: "Fluid", link: "/" }];
-  const [width, setWidth] = createSignal(window.screen.availWidth);
   const [searchParams, setSearchParams] = useSearchParams();
-
-  window.addEventListener("resize", () => setWidth(window.screen.availWidth));
 
   const { user, state } = searchParams;
 
@@ -38,10 +34,14 @@ export const AuthorizeYouTube: Component = () => {
   return (
     <div
       class={
-        "flex h-screen w-screen justify-between bg-slate-950 bg-cccircularRight bg-cover"
+        "flex min-h-screen w-screen justify-center bg-slate-950 lg:bg-cover lg:justify-between lg:bg-cccircularRight pl-8 pr-8 pt-20 lg:pl-32 lg:pt-16"
       }
     >
-      <div class={"ml-32 mt-16 flex max-w-xl basis-1/2 flex-col gap-y-2"}>
+      <div
+        class={
+          "relative flex flex-col gap-y-2 lg:static lg:max-w-xl lg:basis-full"
+        }
+      >
         <div>
           <Typography variation={"title"}>Welcome {user},</Typography>
         </div>
@@ -51,7 +51,7 @@ export const AuthorizeYouTube: Component = () => {
             music you like.
           </Typography>
         </div>
-        <div class="mt-8 w-64">
+        <div class="absolute bottom-16 w-full self-center lg:static lg:mt-8 lg:w-64 lg:self-start">
           <Button
             style="solid"
             label="Authorize YouTube"
