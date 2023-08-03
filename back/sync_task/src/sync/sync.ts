@@ -107,6 +107,23 @@ export async function sync(
         accessToken
       );
     }
+
+    if (!bestMatch) {
+      await prisma.notFound.create({
+        data: {
+          artist,
+          title,
+          searchRequest: `${search.request.method} ${search.request.protocol}//${search.request.host}${search.request.path}`,
+          video: {
+            id: video.id,
+            title: video.title,
+            channelTitle: video.channelTitle,
+            categoryId: video.categoryId,
+          },
+          platform: user.Platform.type,
+        },
+      });
+    }
   }
 
   await prisma.youtube.update({
