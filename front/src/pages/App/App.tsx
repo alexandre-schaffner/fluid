@@ -46,8 +46,8 @@ const App: Component = () => {
       const me = response.data as Me;
       setMe(me);
     } catch (err: unknown) {
-      if (err instanceof AxiosError && err.response?.status === 401) window.location.href = "/";
-      console.error(err);
+      if (err instanceof AxiosError && err.response?.status === 401)
+        window.location.href = "/";
     }
   });
 
