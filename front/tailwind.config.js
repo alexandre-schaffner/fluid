@@ -15,9 +15,11 @@ module.exports = {
         defaultPlaylist: "url('/src/assets/default-playlist.svg')",
         pauseCircle: "url('/src/assets/pause-circle.svg')",
         sync: "url('/src/assets/sync.svg')",
+        logo: "url('/src/assets/logo.svg')",
       },
       animation: {
         'spin-slow': 'spin 2s linear infinite',
+        'spin-very-slow': 'spin 20s linear infinite',
       }
 
     },

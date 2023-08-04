@@ -57,7 +57,7 @@ export const Playlist: Component<PlaylistProps> = (props) => {
   const SyncingLabel: Component = () => {
     return (
       <div class="flex items-center gap-x-2">
-        <div class="h-6 w-6 animate-spin-slow rounded-full bg-sync bg-cover bg-center" />
+        <div class="h-6 w-6 animate-spin-slow rounded-full bg-sync bg-contain bg-center" />
         <Typography variation="small">syncing</Typography>
       </div>
     );
@@ -68,7 +68,7 @@ export const Playlist: Component<PlaylistProps> = (props) => {
   const SyncPaused: Component = () => {
     return (
       <div class="flex items-center gap-x-2">
-        <div class="h-6 w-6 rounded-full bg-pauseCircle bg-cover bg-center" />
+        <div class="h-6 w-6 rounded-full bg-pauseCircle bg-contain bg-center bg-no-repeat" />
         <Typography variation="small">sync paused</Typography>
       </div>
     );

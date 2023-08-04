@@ -4,11 +4,11 @@
 | Author : Alexandre Schaffner (alexandre.schaffner@icloud.com)
 */
 
-import { type Component, Show, splitProps } from 'solid-js';
+import { type Component, Show, splitProps } from "solid-js";
 
-import { Button } from '../../../components/Button/Button';
-import { CardHeader } from '../../../components/Card/CardHeader';
-import { Typography } from '../../../components/Typography/Typography';
+import { Button } from "../../../components/Button/Button";
+import { CardHeader } from "../../../components/Card/CardHeader";
+import { Typography } from "../../../components/Typography/Typography";
 
 interface SyncCardProps {
   isSyncing: boolean;
@@ -31,11 +31,9 @@ export const SyncCard: Component<SyncCardProps> = (props) => {
   ]);
 
   return (
-    <div
-      class="flex flex-col gap-y-2 rounded-xl bg-slate-900 p-4 basis-full md:max-w-sm"
-    >
+    <div class="flex basis-full flex-col gap-y-2 rounded-xl border border-slate-700 bg-slate-900 p-4 md:max-w-sm">
       <CardHeader
-        title="Sync"
+        title="Status"
         description={
           local.syncPlaylistId !== null
             ? "Sync your YouTube and Spotify accounts with Fluid."

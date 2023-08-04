@@ -28,7 +28,7 @@ export const PlaylistCard: Component<PlaylistCardProps> = (props) => {
   const [local, others] = splitProps(props, ["playlists", "isSyncing"]);
 
   return (
-    <div class="flex flex-col gap-y-2 rounded-xl bg-slate-900 p-4 sm:basis-full md:max-w-xl">
+    <div class="flex flex-col gap-y-2 rounded-xl border border-slate-700 bg-slate-900 p-4 sm:basis-full md:max-w-xl">
       <CardHeader
         title="Playlist"
         description="Fluid automatically saves music you like on YouTube to this playlist."

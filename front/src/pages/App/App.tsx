@@ -16,6 +16,7 @@ import { Header } from "./components/Header";
 import { PlaylistCard } from "./components/PlaylistCard";
 import { SyncCard } from "./components/SyncCard";
 import { type PlaylistMetadata } from "../../contracts/PlaylistMetadata.interface";
+import { TimerCard } from "./components/TimerCard";
 
 /*
 |--------------------------------------------------------------------------
@@ -107,16 +108,20 @@ const App: Component = () => {
         </>
       </Show>
 
+      <div class="flex flex-col gap-y-4">
+        <SyncCard
+          isSyncing={me.isSync}
+          syncPlaylistId={me.syncPlaylistId}
+          toggleSync={toggleSyncStatus}
+        />
+
+        <TimerCard />
+      </div>
+
       <PlaylistCard
         playlists={me.playlists ?? []}
         isSyncing={me.isSync ?? false}
         setSync={toggleSyncPlaylist}
-      />
-
-      <SyncCard
-        isSyncing={me.isSync}
-        syncPlaylistId={me.syncPlaylistId}
-        toggleSync={toggleSyncStatus}
       />
     </div>
   );
