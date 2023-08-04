@@ -4,11 +4,11 @@
 | Author : Alexandre Schaffner (alexandre.schaffner@icloud.com)
 */
 
-import axios from 'axios';
-import { type Component, Show, splitProps } from 'solid-js';
+import axios from "axios";
+import { type Component, Show, splitProps } from "solid-js";
 
-import { backendHost } from '../../constants.json';
-import { Typography } from '../Typography/Typography';
+import { backendHost } from "../../constants.json";
+import { Typography } from "../Typography/Typography";
 
 const axiosInstance = axios.create({
   baseURL: backendHost,
@@ -31,7 +31,7 @@ interface PlaylistProps {
   isSyncedPlaylist: boolean;
   isSyncing: boolean;
   toggleSync: (playlistId: string) => void;
-};
+}
 
 // Component
 // --------------------------------------------------------------------------
@@ -57,10 +57,7 @@ export const Playlist: Component<PlaylistProps> = (props) => {
   const SyncingLabel: Component = () => {
     return (
       <div class="flex items-center gap-x-2">
-        <div
-          class="h-2 w-2 rounded-full bg-green-400"
-          classList={{ "bg-orange-400": !local.isSyncing }}
-        />
+        <div class="h-6 w-6 animate-spin-slow rounded-full bg-sync" />
         <Typography variation="small">syncing</Typography>
       </div>
     );
@@ -71,7 +68,7 @@ export const Playlist: Component<PlaylistProps> = (props) => {
   const SyncPaused: Component = () => {
     return (
       <div class="flex items-center gap-x-2">
-        <div class="h-2 w-2 rounded-full bg-orange-400" />
+        <div class="h-6 w-6 rounded-full bg-pauseCircle" />
         <Typography variation="small">sync paused</Typography>
       </div>
     );
@@ -82,21 +79,30 @@ export const Playlist: Component<PlaylistProps> = (props) => {
   return (
     <div
       class={
-        "flex w-full visible gap-4 rounded-md p-2 hover:cursor-pointer hover:bg-gradient-to-r"
+        "flex w-full gap-4 rounded-md p-2 transition-all duration-100 hover:cursor-pointer hover:bg-gradient-to-r"
       }
       classList={{
-        "bg-slate-800 border-2 from-green-900 to-green-600 mb-4": local.isSyncedPlaylist,
+        "bg-slate-800 border-2 from-green-900 to-green-600 mb-4":
+          local.isSyncedPlaylist,
         "from-blue-800 to-blue-500": !local.isSyncedPlaylist,
         "border-green-500": local.isSyncedPlaylist && local.isSyncing,
-        "border-orange-500 from-orange-900 to-orange-600": local.isSyncedPlaylist && !local.isSyncing,
+        "border-orange-500 from-orange-900 to-orange-600":
+          local.isSyncedPlaylist && !local.isSyncing,
       }}
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onClick={async () => {
         await setPlaylist(local.id);
       }}
     >
-      <img src={local.image ?? "src/assets/default-playlist.png"}  class="w-16 max- rounded-sm h-16 object-cover" />
-
+      <Show
+        when={local.image}
+        fallback={<div class="h-16 w-16 rounded-sm bg-defaultPlaylist" />}
+      >
+        <img
+          src={local.image ?? "src/assets/default-playlist.png"}
+          class="h-16 w-16 rounded-sm object-cover"
+        />
+      </Show>
       <div class="w-1/2 flex-col">
         <Typography>{local.name}</Typography>
         <Typography variation="small">{local.length} Songs</Typography>

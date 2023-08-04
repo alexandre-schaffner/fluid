@@ -12,7 +12,14 @@ module.exports = {
         cccircularLeft: "url('/src/assets/cccircular-left.svg')",
         cccircularCenter: "url('/src/assets/cccircular-center.svg')",
         cccircularBottom: "url('/src/assets/cccircular-bottom.svg')",
+        defaultPlaylist: "url('/src/assets/default-playlist.svg')",
+        pauseCircle: "url('/src/assets/pause-circle.svg')",
+        sync: "url('/src/assets/sync.svg')",
+      },
+      animation: {
+        'spin-slow': 'spin 2s linear infinite',
       }
+
     },
   },
   plugins: [],

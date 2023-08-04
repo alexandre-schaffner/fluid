@@ -15,6 +15,7 @@ import { type Me } from "../../contracts/Me.interface";
 import { Header } from "./components/Header";
 import { PlaylistCard } from "./components/PlaylistCard";
 import { SyncCard } from "./components/SyncCard";
+import { type PlaylistMetadata } from "../../contracts/PlaylistMetadata.interface";
 
 /*
 |--------------------------------------------------------------------------
@@ -44,12 +45,23 @@ const App: Component = () => {
     try {
       const response = await axiosInstance.get("/me");
       const me = response.data as Me;
+      sortPlaylists(me.playlists);
       setMe(me);
     } catch (err: unknown) {
       if (err instanceof AxiosError && err.response?.status === 401)
         window.location.href = "/";
     }
   });
+
+  const sortPlaylists = (playlists: PlaylistMetadata[]): void => {
+    for (let i = 0; i < playlists.length; i++) {
+      if (playlists[i].isSync) {
+        playlists.unshift(playlists[i]);
+        playlists.splice(i + 1, 1);
+        break;
+      }
+    }
+  };
 
   const toggleSyncPlaylist = (playlistId: string): void => {
     const updatedPlaylists = me.playlists.map((playlist) => {
@@ -61,13 +73,7 @@ const App: Component = () => {
       return playlist;
     });
 
-    for (let i = 0; i < updatedPlaylists.length; i++) {
-      if (updatedPlaylists[i].isSync) {
-        updatedPlaylists.unshift(updatedPlaylists[i]);
-        updatedPlaylists.splice(i + 1, 1);
-        break;
-      }
-    }
+    sortPlaylists(updatedPlaylists);
 
     setMe({
       ...me,
