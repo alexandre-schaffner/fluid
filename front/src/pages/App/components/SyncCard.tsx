@@ -31,7 +31,7 @@ export const SyncCard: Component<SyncCardProps> = (props) => {
   ]);
 
   return (
-    <div class="flex basis-full flex-col gap-y-2 rounded-xl border border-slate-700 bg-slate-900 p-4 md:max-w-sm">
+    <div class="flex flex-col gap-y-2 rounded-xl border border-slate-700 bg-slate-900 p-4">
       <CardHeader
         title="Status"
         description={

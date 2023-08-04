@@ -6,7 +6,6 @@
 
 import { type Component } from "solid-js";
 
-import { CardHeader } from "../../../components/Card/CardHeader";
 import { Typography } from "../../../components/Typography/Typography";
 import { createSignal } from "solid-js";
 import { Divider } from "../../../components/Divider/Divider";
@@ -27,7 +26,7 @@ export const TimerCard: Component = () => {
   }, 1000);
 
   return (
-    <div class="flex basis-full flex-col gap-y-2 rounded-xl border border-slate-700 bg-slate-900 p-4 md:max-w-sm">
+    <div class="flex flex-col gap-y-2 rounded-xl border border-slate-700 bg-slate-900 p-4">
       <div class="mb-2 flex flex-col gap-y-4">
         <Typography variation="cardTitle">Next sync in</Typography>
         <Divider />

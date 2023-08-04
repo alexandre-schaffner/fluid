@@ -108,7 +108,7 @@ const App: Component = () => {
         </>
       </Show>
 
-      <div class="flex flex-col gap-y-4">
+      <div class="basis-full md:max-w-sm flex flex-col gap-y-4">
         <SyncCard
           isSyncing={me.isSync}
           syncPlaylistId={me.syncPlaylistId}
