@@ -4,7 +4,7 @@
 | Author : Alexandre Schaffner (alexandre.schaffner@icloud.com)
 */
 
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { type Component, createSignal, onMount, Show } from "solid-js";
 import { createStore } from "solid-js/store";
 
@@ -46,6 +46,7 @@ const App: Component = () => {
       const me = response.data as Me;
       setMe(me);
     } catch (err: unknown) {
+      if (err instanceof AxiosError && err.response?.status === 401) window.location.href = "/";
       console.error(err);
     }
   });
