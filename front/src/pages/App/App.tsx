@@ -108,6 +108,12 @@ const App: Component = () => {
         </>
       </Show>
 
+        <PlaylistCard
+          playlists={me.playlists ?? []}
+          isSyncing={me.isSync ?? false}
+          setSync={toggleSyncPlaylist}
+        />
+
       <div class="basis-full md:max-w-sm flex flex-col gap-y-4">
         <SyncCard
           isSyncing={me.isSync}
@@ -117,12 +123,6 @@ const App: Component = () => {
 
         <TimerCard />
       </div>
-
-      <PlaylistCard
-        playlists={me.playlists ?? []}
-        isSyncing={me.isSync ?? false}
-        setSync={toggleSyncPlaylist}
-      />
     </div>
   );
 };

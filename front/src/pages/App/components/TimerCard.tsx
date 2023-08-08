@@ -22,7 +22,7 @@ export const TimerCard: Component = () => {
   );
 
   setInterval(() => {
-    seconds() === 0 ? setSeconds(60) : setSeconds(seconds() - 1);
+    seconds() === 0 ? setSeconds(60) : setSeconds(60 - new Date().getSeconds());
   }, 1000);
 
   return (
