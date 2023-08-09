@@ -19,10 +19,6 @@ export async function searchTrack(
 ) {
   return await axios.get(
     `https://api.spotify.com/v1/search?q=artist:${artist} track:${title}&type=track&limit=5`,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
+    { headers: { Authorization: `Bearer ${accessToken}` } }
   );
 }

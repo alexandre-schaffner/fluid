@@ -13,9 +13,37 @@ import { isInPlaylist } from "../spotify/isInPlaylist";
 import { refreshAccessToken } from "../spotify/refreshToken";
 import { searchTrack } from "../spotify/searchTrack";
 import { getArtist } from "../utils/getArtist";
+import { getBestMatch } from "../utils/getBestMatch";
 import { getTitle } from "../utils/getTitle";
 import { getLastLikedVideos } from "../youtube/getLastLikedVideos";
 
+/*
+|--------------------------------------------------------------------------
+| Sync task
+|--------------------------------------------------------------------------
+*/
+
+// Get YouTube client
+//--------------------------------------------------------------------------
+const getYouTubeClient = (refreshToken: string) => {
+  const googleClient = new google.auth.OAuth2(
+    process.env["GOOGLE_CLIENT_ID"],
+    process.env["GOOGLE_CLIENT_SECRET"],
+    process.env["GOOGLE_REDIRECT_URI"]
+  );
+
+  googleClient.setCredentials({
+    refresh_token: refreshToken,
+  });
+
+  return google.youtube({
+    version: "v3",
+    auth: googleClient,
+  });
+};
+
+// Sync function
+//--------------------------------------------------------------------------
 export async function sync(
   user: User & { Platform: Platform; Youtube: Youtube }, // TODO: type this properly
   prisma: PrismaClient
@@ -29,23 +57,10 @@ export async function sync(
     );
   }
 
-  const googleClient = new google.auth.OAuth2(
-    process.env["GOOGLE_CLIENT_ID"],
-    process.env["GOOGLE_CLIENT_SECRET"],
-    process.env["GOOGLE_REDIRECT_URI"]
-  );
-
-  googleClient.setCredentials({
-    refresh_token: user.Youtube.refreshToken,
-  });
-
-  const youtube = google.youtube({
-    version: "v3",
-    auth: googleClient,
-  });
+  const youtubeClient = getYouTubeClient(user.Youtube.refreshToken);
 
   const { lastLikedVideos, etag }: { lastLikedVideos: Video[]; etag: string } =
-    await getLastLikedVideos(youtube, user.Youtube.likedVideoEtag ?? "");
+    await getLastLikedVideos(youtubeClient, user.Youtube.likedVideoEtag ?? "");
 
   if (lastLikedVideos.length === 0) return;
 
@@ -59,36 +74,79 @@ export async function sync(
       //--------------------------------------------------------------------------
       if (user.Youtube.lastLikedVideos.includes(video)) continue;
 
-      // Try to retrieve an artist and a title from the video title
-      //--------------------------------------------------------------------------
-      const artist = getArtist(video);
-      const title = getTitle(video);
+      const trackCache = await prisma.track.findFirst({
+        where: {
+          AND: [
+            {
+              videos: {
+                some: video,
+              },
+            },
+            { platform: user.Platform.type },
+          ],
+        },
+      });
 
-      console.log(`Artist: ${artist}, Title: ${title}`);
+      let bestMatch;
 
-      if (!artist || !title) continue;
+      if (trackCache) {
+        bestMatch = trackCache.uniqueRef;
+      } else {
+        // Try to retrieve an artist and a title from the video title
+        //--------------------------------------------------------------------------
+        const artist = getArtist(video);
+        const title = getTitle(video);
 
-      const search = await searchTrack(artist, title, accessToken);
+        console.log(`Artist: ${artist}, Title: ${title}`);
 
-      // Loop over the results and try to find the best match
-      //--------------------------------------------------------------------------
-      let bestMatch = "";
-      let bestMatchScore = 0;
+        if (!artist || !title) continue;
 
-      for (const item of search.data.tracks.items) {
-        let score = 0;
+        const search = await searchTrack(artist, title, accessToken);
 
-        if (
-          item.artists
-            .map((artist: any) => artist.name.toLowerCase())
-            .includes(artist.toLowerCase())
-        )
-          score++;
-        if (item.name.toLowerCase() === title.toLowerCase) score++;
+        bestMatch = getBestMatch(search, artist, title);
 
-        if (score > bestMatchScore) {
-          bestMatch = item.id;
-          bestMatchScore = score;
+        if (!bestMatch) {
+          const searchRequest = `${search.request.method} ${search.request.protocol}//${search.request.host}${search.request.path}`;
+
+          // Add the track to the not found collection
+          //--------------------------------------------------------------------------
+          console.log(
+            `Adding [${video.id}]: ${artist} - ${title} to the not found collection`
+          );
+          await prisma.notFound.upsert({
+            where: {
+              searchRequest,
+            },
+            create: {
+              artist,
+              title,
+              searchRequest,
+              video,
+              platform: user.Platform.type,
+            },
+            update: {},
+          });
+          console.log("Track added to the not found collection");
+        } else {
+          // Add or update the track to the database
+          //--------------------------------------------------------------------------
+          await prisma.track.upsert({
+            where: {
+              uniqueRef: bestMatch,
+            },
+            create: {
+              artist,
+              title,
+              platform: user.Platform.type,
+              uniqueRef: bestMatch,
+              videos: [video],
+            },
+            update: {
+              videos: {
+                push: video,
+              },
+            },
+          });
         }
       }
 
@@ -102,64 +160,11 @@ export async function sync(
           accessToken
         ))
       ) {
-        console.log(
-          `Adding [${bestMatch}]: ${artist} - ${title} to the playlist`
-        );
         await addToPlaylist(
           user.Platform.playlistUniqueRef,
           bestMatch,
           accessToken
         );
-      }
-
-      console.log(`Best match: ${bestMatch}`);
-
-      if (!bestMatch) {
-        const searchRequest = `${search.request.method} ${search.request.protocol}//${search.request.host}${search.request.path}`;
-        // Add the track to the not found collection
-        //--------------------------------------------------------------------------
-        console.log(
-          `Adding [${video.id}]: ${artist} - ${title} to the not found collection`
-        );
-        await prisma.notFound.upsert({
-          where: {
-            searchRequest,
-          },
-          create: {
-            artist,
-            title,
-            searchRequest,
-            video: {
-              id: video.id,
-              title: video.title,
-              channelTitle: video.channelTitle,
-              categoryId: video.categoryId,
-            },
-            platform: user.Platform.type,
-          },
-          update: {},
-        });
-        console.log("Track added to the not found collection");
-      } else {
-        // Add or update the track to the database
-        //--------------------------------------------------------------------------
-        await prisma.track.upsert({
-          where: {
-            uniqueRef: bestMatch,
-          },
-          create: {
-            artist,
-            title,
-            platform: user.Platform.type,
-            uniqueRef: bestMatch,
-            videos: [video],
-          },
-          update: {
-            videos: {
-              push: video,
-            },
-          },
-        });
       }
     } catch (err: unknown) {
       console.error(err);
