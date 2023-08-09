@@ -10,9 +10,11 @@ export const getTitle = (video: Video) => {
   else if (video.categoryId === "10") title = video.title;
 
   if (title) {
+    title = title.replace(/#shorts?/, "");
+
     const regex = /( (\(.*|\|.*|ft.*|feat.*|x.*|\[.*))/gi;
     title = title.replace(regex, "");
   }
 
-  return title;
+  return title === "" ? null : title;
 };

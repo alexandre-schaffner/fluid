@@ -54,78 +54,118 @@ export async function sync(
   const accessToken = await refreshAccessToken(user.Platform.refreshToken);
 
   for (const video of lastLikedVideos) {
-    // Check if the video has already been synced
-    //--------------------------------------------------------------------------
-    if (user.Youtube.lastLikedVideos.includes(video)) continue;
+    try {
+      // Check if the video has already been synced
+      //--------------------------------------------------------------------------
+      if (user.Youtube.lastLikedVideos.includes(video)) continue;
 
-    // Try to retrieve an artist and a title from the video title
-    //--------------------------------------------------------------------------
-    const artist = getArtist(video);
-    const title = getTitle(video);
+      // Try to retrieve an artist and a title from the video title
+      //--------------------------------------------------------------------------
+      const artist = getArtist(video);
+      const title = getTitle(video);
 
-    console.log(`Artist: ${artist}, Title: ${title}`);
+      console.log(`Artist: ${artist}, Title: ${title}`);
 
-    if (!artist || !title) continue;
+      if (!artist || !title) continue;
 
-    const search = await searchTrack(artist, title, accessToken);
+      const search = await searchTrack(artist, title, accessToken);
 
-    // Loop over the results and try to find the best match
-    //--------------------------------------------------------------------------
-    let bestMatch = "";
-    let bestMatchScore = 0;
+      // Loop over the results and try to find the best match
+      //--------------------------------------------------------------------------
+      let bestMatch = "";
+      let bestMatchScore = 0;
 
-    for (const item of search.data.tracks.items) {
-      let score = 0;
+      for (const item of search.data.tracks.items) {
+        let score = 0;
 
-      if (
-        item.artists
-          .map((artist: any) => artist.name.toLowerCase())
-          .includes(artist.toLowerCase())
-      )
-        score++;
-      if (item.name.toLowerCase() === title.toLowerCase) score++;
+        if (
+          item.artists
+            .map((artist: any) => artist.name.toLowerCase())
+            .includes(artist.toLowerCase())
+        )
+          score++;
+        if (item.name.toLowerCase() === title.toLowerCase) score++;
 
-      if (score > bestMatchScore) {
-        bestMatch = item.id;
-        bestMatchScore = score;
+        if (score > bestMatchScore) {
+          bestMatch = item.id;
+          bestMatchScore = score;
+        }
       }
-    }
 
-    // Add the track to the playlist if it's not already in it
-    //--------------------------------------------------------------------------
-    if (
-      bestMatch &&
-      !(await isInPlaylist(
-        user.Platform.playlistUniqueRef,
-        bestMatch,
-        accessToken
-      ))
-    ) {
-      await addToPlaylist(
-        user.Platform.playlistUniqueRef,
-        bestMatch,
-        accessToken
-      );
-    }
+      // Add the track to the playlist if it's not already in it
+      //--------------------------------------------------------------------------
+      if (
+        bestMatch &&
+        !(await isInPlaylist(
+          user.Platform.playlistUniqueRef,
+          bestMatch,
+          accessToken
+        ))
+      ) {
+        console.log(
+          `Adding [${bestMatch}]: ${artist} - ${title} to the playlist`
+        );
+        await addToPlaylist(
+          user.Platform.playlistUniqueRef,
+          bestMatch,
+          accessToken
+        );
+      }
 
-    if (!bestMatch) {
-      await prisma.notFound.create({
-        data: {
-          artist,
-          title,
-          searchRequest: `${search.request.method} ${search.request.protocol}//${search.request.host}${search.request.path}`,
-          video: {
-            id: video.id,
-            title: video.title,
-            channelTitle: video.channelTitle,
-            categoryId: video.categoryId,
+      console.log(`Best match: ${bestMatch}`);
+
+      if (!bestMatch) {
+        const searchRequest = `${search.request.method} ${search.request.protocol}//${search.request.host}${search.request.path}`;
+        // Add the track to the not found collection
+        //--------------------------------------------------------------------------
+        console.log(
+          `Adding [${video.id}]: ${artist} - ${title} to the not found collection`
+        );
+        await prisma.notFound.upsert({
+          where: {
+            searchRequest,
           },
-          platform: user.Platform.type,
-        },
-      });
+          create: {
+            artist,
+            title,
+            searchRequest,
+            video: {
+              id: video.id,
+              title: video.title,
+              channelTitle: video.channelTitle,
+              categoryId: video.categoryId,
+            },
+            platform: user.Platform.type,
+          },
+          update: {},
+        });
+        console.log("Track added to the not found collection");
+      } else {
+        // Add or update the track to the database
+        //--------------------------------------------------------------------------
+        await prisma.track.upsert({
+          where: {
+            uniqueRef: bestMatch,
+          },
+          create: {
+            artist,
+            title,
+            platform: user.Platform.type,
+            uniqueRef: bestMatch,
+            videos: [video],
+          },
+          update: {
+            videos: {
+              push: video,
+            },
+          },
+        });
+      }
+    } catch (err: unknown) {
+      console.error(err);
+      continue;
     }
   }
-
   await prisma.youtube.update({
     where: {
       userId: user.id,

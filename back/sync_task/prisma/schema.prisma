@@ -45,8 +45,18 @@ model NotFound {
   video         Video
   artist        String
   title         String
-  searchRequest String
+  searchRequest String            @unique
   platform      StreamingPlatform
+}
+
+model Track {
+  id        String            @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime          @default(now())
+  title     String
+  artist    String
+  platform  StreamingPlatform
+  uniqueRef String            @unique
+  videos    Video[]
 }
 
 type Video {
