@@ -2,8 +2,14 @@ import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { PrismaService } from 'src/prisma/prisma.service';
 
+import { PlaylistMetadata } from '../contracts/PlaylistMetadata';
+
 @Injectable()
 export class DeezerService {
+  private readonly axiosInstance = axios.create({
+    baseURL: 'https://api.deezer.com',
+  });
+
   constructor(private readonly prisma: PrismaService) {}
 
   async exchangeCodeForTokens(code: string, userId: string) {
@@ -13,8 +19,8 @@ export class DeezerService {
       )
     ).data.access_token;
 
-    const res = await axios.get(
-      `https://api.deezer.com/user/me?access_token=${accessToken}`,
+    const res = await this.axiosInstance.get(
+      `/user/me?access_token=${accessToken}`,
     );
 
     await this.prisma.platform.upsert({
@@ -39,5 +45,28 @@ export class DeezerService {
     });
 
     return accessToken;
+  }
+
+  // Get user playlists
+  //--------------------------------------------------------------------------
+  async getPlaylists(accessToken: string): Promise<PlaylistMetadata[]> {
+    const res = await this.axiosInstance.get(
+      `/user/me/playlists?access_token=${accessToken}`,
+    );
+    const playlists: PlaylistMetadata[] = [];
+
+    for (const item of res.data.data) {
+      playlists.push({
+        id: String(item.id),
+        name: item.title,
+        image: item.picture,
+        length: item.nb_tracks,
+        href: item.link,
+        tracks: [],
+        isSync: false,
+      });
+    }
+
+    return playlists;
   }
 }

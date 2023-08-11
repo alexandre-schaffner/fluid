@@ -4,20 +4,11 @@
 | Author : Alexandre Schaffner (alexandre.schaffner@icloud.com)
 */
 
-import {
-  Body,
-  Controller,
-  Get,
-  Query,
-  Req,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Query, Req, Res, UseGuards } from '@nestjs/common';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { VerifyJwtGuard } from 'src/guards/verify-jwt.guard';
 
 import { pagesUrls } from '../utils/pageUrls';
-import { SetPlaylistDto } from './dto/setPlaylist.dto';
 import { SpotifyService } from './spotify.service';
 
 /*
@@ -45,14 +36,5 @@ export class SpotifyController {
     await this.spotifyService.exchangeCodeForTokens(code, req.user!.sub!);
 
     return res.status(302).redirect(pagesUrls.homePage);
-  }
-
-  // Set the playlist to sync
-  //--------------------------------------------------------------------------
-  @UseGuards(VerifyJwtGuard)
-  @Get('playlist/set')
-  async setPlaylist(@Req() req: FastifyRequest, @Body() body: SetPlaylistDto) {
-    const { playlistId } = body;
-    await this.spotifyService.setPlaylist(req.user!.sub!, playlistId);
   }
 }

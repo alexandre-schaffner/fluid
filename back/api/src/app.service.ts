@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { MeDto } from './contracts/Me.dto';
 import { PrismaService } from './prisma/prisma.service';
-import { SpotifyService } from './spotify/spotify.service';
 import { MissingDataError } from './Errors/MissingData.error';
+import { StreamingPlatformService } from './platform/platform.service';
 
 @Injectable()
 export class AppService {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly spotifySevice: SpotifyService,
+    private readonly platformService: StreamingPlatformService,
   ) {}
 
   async getMe(id: string): Promise<MeDto> {
@@ -23,16 +23,13 @@ export class AppService {
 
     if (!user.Platform) throw new MissingDataError('Platform');
 
-    const playlists = await this.spotifySevice.getPlaylists(
-      user.Platform?.userUniqueRef,
-      user.Platform?.refreshToken,
-    );
+    const playlists = await this.platformService.getPlaylists(id);
 
     const me: MeDto = {
       id: user.id,
       name: user.name,
       isSync: user.sync,
-      playlists: playlists,
+      playlists,
       syncPlaylistId: user.Platform.playlistUniqueRef,
     };
 

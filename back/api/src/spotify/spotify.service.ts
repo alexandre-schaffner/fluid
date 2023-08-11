@@ -127,17 +127,4 @@ export class SpotifyService {
 
     return playlists;
   }
-
-  // Set the playlist to sync
-  //--------------------------------------------------------------------------
-  async setPlaylist(userId: string, playlistId: string) {
-    await this.prismaService.platform.update({
-      data: {
-        playlistUniqueRef: playlistId,
-      },
-      where: {
-        userId,
-      },
-    });
-  }
 }
