@@ -40,4 +40,41 @@ export class AppService {
 
     return me;
   }
+
+  // Enable syncing between YouTube and the streaming platform
+  //--------------------------------------------------------------------------
+  async enableSync(userId: string) {
+    const tokens = await this.prismaService.user.findUniqueOrThrow({
+      where: { id: userId },
+      include: {
+        Platform: {
+          select: { refreshToken: true, playlistUniqueRef: true, type: true },
+        },
+        Youtube: { select: { refreshToken: true } },
+      },
+    });
+
+    const youtubeRefreshToken = tokens.Youtube?.refreshToken;
+    const platformRefreshToken = tokens.Platform?.refreshToken;
+    const playlistId = tokens.Platform?.playlistUniqueRef;
+
+    if (!youtubeRefreshToken || !platformRefreshToken || !playlistId)
+      throw new Error(
+        'Cannot sync: the user has not connected its music streaming platform or has not set a playlist to sync.',
+      );
+
+    await this.prismaService.user.update({
+      where: { id: userId },
+      data: { sync: true },
+    });
+  }
+
+  // Disable syncing between YouTube and the streaming platform
+  //--------------------------------------------------------------------------
+  async disableSync(userId: string) {
+    await this.prismaService.user.update({
+      where: { id: userId },
+      data: { sync: false },
+    });
+  }
 }
