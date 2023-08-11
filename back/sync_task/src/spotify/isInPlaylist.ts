@@ -11,8 +11,11 @@ import axios from "axios";
 export async function isInPlaylist(
   playlistId: string,
   trackId: string,
-  accessToken: string
+  accessToken: string,
+  platform: "SPOTIFY" | "DEEZER"
 ) {
+  if (platform === "DEEZER") return false;
+
   const response = await axios.get(
     `https://api.spotify.com/v1/playlists/${playlistId}`,
     {

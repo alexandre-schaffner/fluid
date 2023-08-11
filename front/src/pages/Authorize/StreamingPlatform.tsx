@@ -45,7 +45,7 @@ export const AuthorizeStreamingPlatform = (): JSXElement => {
         </div>
 
         <div class="absolute bottom-16 flex h-min flex-col gap-4 lg:static lg:mt-8 lg:flex-row w-full">
-          <div class="lg:w-64">
+          <div class="lg:w-64 h-20 lg:h-full">
             <Button
               style="solid"
               clickHandler={() =>
@@ -61,7 +61,7 @@ export const AuthorizeStreamingPlatform = (): JSXElement => {
             </Button>
           </div>
 
-          <div class="lg:w-64">
+          <div class="lg:w-64 h-20 lg:h-full">
             <Button
               style="solid"
               clickHandler={() =>

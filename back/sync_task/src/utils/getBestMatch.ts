@@ -4,6 +4,8 @@
 | Author : Alexandre Schaffner (alexandre.schaffner@icloud.com)
 */
 
+import { Search } from "src/contracts/Search";
+
 /*
 |--------------------------------------------------------------------------
 | Get best match
@@ -11,7 +13,7 @@
 */
 
 export const getBestMatch = (
-  search: any,
+  search: Search,
   artist: string,
   title: string
 ): string => {
@@ -20,19 +22,14 @@ export const getBestMatch = (
 
   // Loop over the results and try to find the best match
   //--------------------------------------------------------------------------
-  for (const item of search.data.tracks.items) {
+  for (const item of search.results) {
     let score = 0;
 
-    if (
-      item.artists
-        .map((artist: any) => artist.name.toLowerCase())
-        .includes(artist.toLowerCase())
-    )
-      score++;
-    if (item.name.toLowerCase() === title.toLowerCase) score++;
+    if (item.artists.includes(artist.toLowerCase())) score++;
+    if (item.title === title.toLowerCase()) score++;
 
     if (score > bestMatchScore) {
-      bestMatch = item.id;
+      bestMatch = String(item.uniqueRef);
       bestMatchScore = score;
     }
   }

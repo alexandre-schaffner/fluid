@@ -64,9 +64,26 @@ export async function sync(
 
   if (lastLikedVideos.length === 0) return;
 
-  // Get Spotify access token
-  //--------------------------------------------------------------------------
-  const accessToken = await refreshAccessToken(user.Platform.refreshToken);
+  let accessToken: string;
+
+  switch (user.Platform.type) {
+    // Get Spotify access token
+    //--------------------------------------------------------------------------
+    case "SPOTIFY":
+      accessToken = await refreshAccessToken(user.Platform.refreshToken);
+      break;
+
+    // Get Deezer access token
+    //--------------------------------------------------------------------------
+    case "DEEZER":
+      accessToken = user.Platform.refreshToken;
+      break;
+
+    default:
+      throw new Error(
+        `Cannot sync ${user.id}: the user has an invalid platform.`
+      );
+  }
 
   for (const video of lastLikedVideos) {
     try {
@@ -101,13 +118,16 @@ export async function sync(
 
         if (!artist || !title) continue;
 
-        const search = await searchTrack(artist, title, accessToken);
+        const search = await searchTrack(
+          artist,
+          title,
+          accessToken,
+          user.Platform.type
+        );
 
         bestMatch = getBestMatch(search, artist, title);
 
         if (!bestMatch) {
-          const searchRequest = `${search.request.method} ${search.request.protocol}//${search.request.host}${search.request.path}`;
-
           // Add the track to the not found collection
           //--------------------------------------------------------------------------
           console.log(
@@ -115,12 +135,12 @@ export async function sync(
           );
           await prisma.notFound.upsert({
             where: {
-              searchRequest,
+              searchRequest: search.searchRequest,
             },
             create: {
               artist,
               title,
-              searchRequest,
+              searchRequest: search.searchRequest,
               video,
               platform: user.Platform.type,
             },
@@ -157,13 +177,15 @@ export async function sync(
         !(await isInPlaylist(
           user.Platform.playlistUniqueRef,
           bestMatch,
-          accessToken
+          accessToken,
+          user.Platform.type
         ))
       ) {
         await addToPlaylist(
           user.Platform.playlistUniqueRef,
           bestMatch,
-          accessToken
+          accessToken,
+          user.Platform.type
         );
       }
     } catch (err: unknown) {
