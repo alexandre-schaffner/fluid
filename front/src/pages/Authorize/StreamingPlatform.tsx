@@ -8,7 +8,9 @@ import { type JSXElement } from "solid-js";
 
 import { Button } from "../../components/Button/Button";
 import { Typography } from "../../components/Typography/Typography";
-import { backendHost, frontendHost } from "../../constants.json";
+import { backendHost } from "../../constants.json";
+import spotifyLogoUrl from "../../assets/spotify-logo.png";
+import deezerLogoUrl from "../../assets/deezer-logo-mono-white.svg";
 
 const spotifyClientId = "6b99eeab69c44b28aa9187b60312acef";
 const spotifyScopes =
@@ -51,10 +53,9 @@ export const AuthorizeStreamingPlatform = (): JSXElement => {
               }
             >
               <img
-                src={`${frontendHost}/src/assets/spotify-logo.png`}
+                src={spotifyLogoUrl}
                 alt="Spotify"
                 class="mx-auto"
-                // width={256}
                 style={"width: auto; height: 32px; !important"}
               />
             </Button>
@@ -68,10 +69,9 @@ export const AuthorizeStreamingPlatform = (): JSXElement => {
               }
             >
               <img
-                src={`${frontendHost}/src/assets/deezer-logo-mono-white.svg`}
+                src={deezerLogoUrl}
                 alt="Deezer"
                 class="mx-auto"
-                // width={256}
                 style={"width:auto; height: 22px; !important"}
               />
             </Button>
