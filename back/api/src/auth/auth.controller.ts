@@ -9,7 +9,6 @@ import { pagesUrls } from '../utils/pageUrls';
 import { createHmac } from 'crypto';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { YoutubeService } from 'src/youtube/youtube.service';
 
 import { verifyIdTokenGuard } from '../guards/verify-id-token.guard';
 import { AuthService } from './auth.service';
@@ -19,7 +18,6 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly prismaService: PrismaService,
-    private readonly youtubeService: YoutubeService,
   ) {}
 
   // Webhook for Google Sign In

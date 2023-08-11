@@ -60,7 +60,11 @@ export class SpotifyService {
           },
           userUniqueRef,
         },
-        update: {},
+        update: {
+          refreshToken,
+          type: 'SPOTIFY',
+          userUniqueRef,
+        },
         where: {
           userId,
         },

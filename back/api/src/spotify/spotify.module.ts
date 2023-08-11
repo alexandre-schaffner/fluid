@@ -1,11 +1,14 @@
 import { Module } from '@nestjs/common';
-import { SpotifyService } from './spotify.service';
-import { SpotifyController } from './spotify.controller';
+import { AuthModule } from 'src/auth/auth.module';
+import { VerifyJwtGuard } from 'src/guards/verify-jwt.guard';
 import { PrismaModule } from 'src/prisma/prisma.module';
 
+import { SpotifyController } from './spotify.controller';
+import { SpotifyService } from './spotify.service';
+
 @Module({
-  imports: [PrismaModule],
-  providers: [SpotifyService],
+  imports: [PrismaModule, AuthModule],
+  providers: [SpotifyService, VerifyJwtGuard],
   controllers: [SpotifyController],
   exports: [SpotifyService],
 })

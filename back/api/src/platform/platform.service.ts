@@ -7,7 +7,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SpotifyService } from 'src/spotify/spotify.service';
-import { SyncService } from 'src/sync/sync.service';
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +19,6 @@ export class StreamingPlatformService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly spotifyService: SpotifyService,
-    private readonly syncService: SyncService,
   ) {}
 
   // Get user's playlist depending on the platform
