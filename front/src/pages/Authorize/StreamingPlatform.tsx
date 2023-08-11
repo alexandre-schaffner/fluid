@@ -8,12 +8,15 @@ import { type JSXElement } from "solid-js";
 
 import { Button } from "../../components/Button/Button";
 import { Typography } from "../../components/Typography/Typography";
-import { backendHost } from "../../constants.json";
+import { backendHost, frontendHost } from "../../constants.json";
 
 const spotifyClientId = "6b99eeab69c44b28aa9187b60312acef";
 const spotifyScopes =
   "user-read-private%20user-read-email%20playlist-modify-public%20playlist-modify-private";
 const spotifyRedirectUri = `${backendHost}/spotify/webhook/authorize`;
+
+const deezerReirectUri = `${backendHost}/deezer/webhook/authorize`;
+const deezerAppId = "626324";
 
 export const AuthorizeStreamingPlatform = (): JSXElement => {
   return (
@@ -29,7 +32,7 @@ export const AuthorizeStreamingPlatform = (): JSXElement => {
       >
         <div>
           <Typography variation={"title"}>
-            Don't worry, it's the last step
+            What streaming platform do you use ?
           </Typography>
         </div>
         <div class={"max-w-lg"}>
@@ -38,14 +41,41 @@ export const AuthorizeStreamingPlatform = (): JSXElement => {
             automatically manage your playlists.
           </Typography>
         </div>
-        <div class="absolute bottom-16 w-full self-center lg:static lg:mt-8 lg:w-64 lg:self-start">
-          <Button
-            style="solid"
-            label="Authorize Spotify"
-            clickHandler={() =>
-              (document.location.href = `https://accounts.spotify.com/authorize?response_type=code&client_id=${spotifyClientId}&scope=${spotifyScopes}&redirect_uri=${spotifyRedirectUri}`)
-            }
-          />
+
+        <div class="absolute bottom-16 flex h-min flex-col gap-4 lg:static lg:mt-8 lg:flex-row w-full">
+          <div class="lg:w-64">
+            <Button
+              style="solid"
+              clickHandler={() =>
+                (document.location.href = `https://accounts.spotify.com/authorize?response_type=code&client_id=${spotifyClientId}&scope=${spotifyScopes}&redirect_uri=${spotifyRedirectUri}`)
+              }
+            >
+              <img
+                src={`${frontendHost}/src/assets/spotify-logo.png`}
+                alt="Spotify"
+                class="mx-auto"
+                // width={256}
+                style={"width: auto; height: 32px; !important"}
+              />
+            </Button>
+          </div>
+
+          <div class="lg:w-64">
+            <Button
+              style="solid"
+              clickHandler={() =>
+                (document.location.href = `https://connect.deezer.com/oauth/auth.php?app_id=${deezerAppId}&redirect_uri=${deezerReirectUri}&perms=basic_access,email,offline_access,manage_library,manage_community,delete_library,listening_history`)
+              }
+            >
+              <img
+                src={`${frontendHost}/src/assets/deezer-logo-mono-white.svg`}
+                alt="Deezer"
+                class="mx-auto"
+                // width={256}
+                style={"width:auto; height: 22px; !important"}
+              />
+            </Button>
+          </div>
         </div>
       </div>
     </div>

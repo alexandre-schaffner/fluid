@@ -30,11 +30,11 @@ export const PlaylistCard: Component<PlaylistCardProps> = (props) => {
   return (
     <div class="flex flex-col gap-y-2 rounded-xl border border-slate-700 bg-slate-900 p-4 sm:basis-full md:max-w-xl">
       <CardHeader
-        title="Playlist"
+        title="Playlists"
         description="Fluid automatically saves music you like on YouTube to this playlist."
       />
 
-      <div class="no-scrollbar flex max-h-96 flex-col gap-y-1 overflow-y-scroll">
+      <div class="no-scrollbar flex max-h-96 md:h-96 flex-col gap-y-1 overflow-y-scroll">
         <For each={local.playlists}>
           {(playlist) => (
             <Playlist

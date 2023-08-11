@@ -39,7 +39,7 @@ export const Button: ParentComponent<ButtonProps> = (props) => {
     <button
       disabled={local.isDisabled}
       class={
-        "max-h-fit w-full rounded-md border border-blue-500 p-4 transition-all duration-100 hover:border-blue-400"
+        "h-full w-full rounded-md border border-blue-500 p-4 transition-all duration-100 hover:border-blue-400"
       }
       onClick={local.clickHandler}
       classList={{

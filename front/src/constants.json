@@ -1,3 +1,4 @@
 {
-    "backendHost": "https://api.fluidsync.app"
+    "backendHost": "https://api.fluidsync.app",
+    "frontendHost": "https://www.fluidsync.app"
 }

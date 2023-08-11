@@ -16,6 +16,7 @@ module.exports = {
         pauseCircle: "url('/src/assets/pause-circle.svg')",
         sync: "url('/src/assets/sync.svg')",
         logo: "url('/src/assets/logo.svg')",
+        deezerLogoMonoWhite: "url('/src/assets/deezer-logo-mono-white.svg')",
       },
       animation: {
         'spin-slow': 'spin 2s linear infinite',
