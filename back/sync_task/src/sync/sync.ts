@@ -48,6 +48,7 @@ export async function sync(
   user: User & { Platform: Platform; Youtube: Youtube }, // TODO: type this properly
   prisma: PrismaClient
 ) {
+  console.log(`Syncing ${user.id}...`);
   if (!user.Youtube || !user.Platform) {
     throw new Error(`Cannot sync ${user.id}: the user has missing token(s).`);
   }
