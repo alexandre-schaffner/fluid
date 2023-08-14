@@ -24,20 +24,12 @@ async function main() {
     include: { Platform: true, Youtube: true },
   });
 
-  // for (const user of users) {
-  //   try {
-  //     await sync(
-  //       user as User & { Youtube: Youtube; Platform: Platform },
-  //       prisma
-  //     );
-  //   } catch (err: unknown) {
-  //     console.error(err);
-  //     continue;
-  //   }
-  // }
   await Promise.all(
     users.map((user) =>
-      sync(user as User & { Youtube: Youtube; Platform: Platform }, prisma)
+      sync(
+        user as User & { Youtube: Youtube; Platform: Platform },
+        prisma
+      ).catch((err: unknown) => console.error(err))
     )
   );
   console.log("Sync done");
