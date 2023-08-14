@@ -193,7 +193,7 @@ export async function sync(
           user.Platform.type
         );
         console.log(
-          `[${title}] added to the playlist ${user.Platform.playlistUniqueRef}`
+          `[${bestMatch}] added to the playlist ${user.Platform.playlistUniqueRef}`
         );
       }
     } catch (err: unknown) {
