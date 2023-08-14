@@ -192,6 +192,9 @@ export async function sync(
           accessToken,
           user.Platform.type
         );
+        console.log(
+          `Added [${bestMatch}] to the playlist ${user.Platform.playlistUniqueRef}`
+        );
       }
     } catch (err: unknown) {
       console.error(err);
