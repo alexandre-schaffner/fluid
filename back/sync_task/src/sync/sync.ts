@@ -16,6 +16,7 @@ import { getArtist } from "../utils/getArtist";
 import { getBestMatch } from "../utils/getBestMatch";
 import { getTitle } from "../utils/getTitle";
 import { getLastLikedVideos } from "../youtube/getLastLikedVideos";
+import { title } from "process";
 
 /*
 |--------------------------------------------------------------------------
@@ -109,6 +110,7 @@ export async function sync(
 
       if (trackCache) {
         bestMatch = trackCache.uniqueRef;
+        console.log(`Track ${trackCache.title} found in the cache`);
       } else {
         // Try to retrieve an artist and a title from the video title
         //--------------------------------------------------------------------------
@@ -147,8 +149,10 @@ export async function sync(
             },
             update: {},
           });
-          console.log("Track added to the not found collection");
         } else {
+          console.log(
+            `Adding [${bestMatch}]: ${artist} - ${title} to the cache`
+          );
           // Add or update the track to the database
           //--------------------------------------------------------------------------
           await prisma.track.upsert({
