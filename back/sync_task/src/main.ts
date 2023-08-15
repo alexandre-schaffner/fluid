@@ -6,9 +6,11 @@
 
 import "dotenv/config";
 
-import { Platform, PrismaClient, User, Youtube } from "@prisma/client";
+import { Platform, User, Youtube } from "@prisma/client";
 
 import { sync } from "./sync/sync";
+
+import { prisma } from "./utils/prismaClient";
 
 /*
 |--------------------------------------------------------------------------
@@ -16,20 +18,17 @@ import { sync } from "./sync/sync";
 |--------------------------------------------------------------------------
 */
 
-const prisma = new PrismaClient();
-
 async function main() {
   const users = await prisma.user.findMany({
     where: { sync: true },
-    include: { Platform: true, Youtube: true },
+    include: { platform: true, youtube: true },
   });
 
   await Promise.all(
     users.map((user) =>
-      sync(
-        user as User & { Youtube: Youtube; Platform: Platform },
-        prisma
-      ).catch((err: unknown) => console.error(err))
+      sync(user as User & { youtube: Youtube; platform: Platform }).catch(
+        (err: unknown) => console.error(err)
+      )
     )
   );
   console.log("Sync done");

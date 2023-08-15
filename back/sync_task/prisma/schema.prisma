@@ -16,8 +16,10 @@ model User {
   email     String    @unique
   name      String
   sync      Boolean   @default(false)
-  Platform  Platform?
-  Youtube   Youtube?
+  platform  Platform?
+  youtube   Youtube?
+  tracks    Track[]   @relation(fields: [trackIds], references: [id])
+  trackIds  String[]  @db.ObjectId
 }
 
 model Platform {
@@ -57,6 +59,14 @@ model Track {
   platform  StreamingPlatform
   uniqueRef String            @unique
   videos    Video[]
+  users     User[]            @relation(fields: [userIds], references: [id])
+  userIds   String[]          @db.ObjectId
+}
+
+model RevokedToken {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  jti       String   @unique
 }
 
 type Video {

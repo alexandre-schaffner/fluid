@@ -16,8 +16,10 @@ model User {
   email     String    @unique
   name      String
   sync      Boolean   @default(false)
-  Platform  Platform?
-  Youtube   Youtube?
+  platform  Platform?
+  youtube   Youtube?
+  tracks    Track[]   @relation(fields: [trackIds], references: [id])
+  trackIds  String[]  @db.ObjectId
 }
 
 model Platform {
@@ -39,17 +41,39 @@ model Youtube {
   likedVideoEtag  String?
 }
 
-type Video {
-  title        String
-  categoryId   String
-  id           String
-  channelTitle String
+model NotFound {
+  id            String            @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt     DateTime          @default(now())
+  video         Video
+  artist        String
+  title         String
+  searchRequest String            @unique
+  platform      StreamingPlatform
+}
+
+model Track {
+  id        String            @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime          @default(now())
+  title     String
+  artist    String
+  platform  StreamingPlatform
+  uniqueRef String            @unique
+  videos    Video[]
+  users     User[]            @relation(fields: [userIds], references: [id])
+  userIds   String[]          @db.ObjectId
 }
 
 model RevokedToken {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   createdAt DateTime @default(now())
   jti       String   @unique
+}
+
+type Video {
+  title        String
+  categoryId   String
+  id           String
+  channelTitle String
 }
 
 enum StreamingPlatform {

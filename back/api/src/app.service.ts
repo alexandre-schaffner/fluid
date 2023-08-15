@@ -17,11 +17,11 @@ export class AppService {
         id,
       },
       include: {
-        Platform: true,
+        platform: true,
       },
     });
 
-    if (!user.Platform) throw new MissingDataError('Platform');
+    if (!user.platform) throw new MissingDataError('Platform');
 
     const playlists = await this.platformService.getPlaylists(id);
 
@@ -30,12 +30,12 @@ export class AppService {
       name: user.name,
       isSync: user.sync,
       playlists,
-      syncPlaylistId: user.Platform.playlistUniqueRef,
+      syncPlaylistId: user.platform.playlistUniqueRef,
     };
 
     for (const playlist of me.playlists) {
       playlist.isSync =
-        user.Platform.playlistUniqueRef === playlist.id ? true : false;
+        user.platform.playlistUniqueRef === playlist.id ? true : false;
     }
 
     return me;
@@ -47,16 +47,16 @@ export class AppService {
     const tokens = await this.prismaService.user.findUniqueOrThrow({
       where: { id: userId },
       include: {
-        Platform: {
+        platform: {
           select: { refreshToken: true, playlistUniqueRef: true, type: true },
         },
-        Youtube: { select: { refreshToken: true } },
+        youtube: { select: { refreshToken: true } },
       },
     });
 
-    const youtubeRefreshToken = tokens.Youtube?.refreshToken;
-    const platformRefreshToken = tokens.Platform?.refreshToken;
-    const playlistId = tokens.Platform?.playlistUniqueRef;
+    const youtubeRefreshToken = tokens.youtube?.refreshToken;
+    const platformRefreshToken = tokens.platform?.refreshToken;
+    const playlistId = tokens.platform?.playlistUniqueRef;
 
     if (!youtubeRefreshToken || !platformRefreshToken || !playlistId)
       throw new Error(
