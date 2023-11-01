@@ -9,7 +9,6 @@ import "dotenv/config";
 import { Platform, User, Youtube } from "@prisma/client";
 
 import { sync } from "./sync/sync";
-
 import { prisma } from "./utils/prismaClient";
 
 /*
@@ -25,10 +24,8 @@ async function main() {
   });
 
   await Promise.all(
-    users.map((user) =>
-      sync(user as User & { youtube: Youtube; platform: Platform }).catch(
-        (err: unknown) => console.error(err)
-      )
+    users.map((user: User & { youtube: Youtube; platform: Platform }) =>
+      sync(user).catch((err: unknown) => console.error(err))
     )
   );
   console.log("Sync done");

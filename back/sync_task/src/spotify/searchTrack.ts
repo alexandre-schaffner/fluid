@@ -42,6 +42,12 @@ export async function searchTrack(
         `https://api.deezer.com/search?q=artist:"${artist}" track:"${title}"&limit=5`
       );
 
+      if (res.data.total === 0) {
+        res = await axios.get(
+          `https://api.deezer.com/search?q=track:"${title}"&limit=5`
+        );
+      }
+
       return {
         results: res.data.data.map((item: any) => ({
           uniqueRef: item.id,
